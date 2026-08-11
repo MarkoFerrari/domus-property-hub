@@ -1,0 +1,25 @@
+node_modules
+dist
+dist-ssr
+.env
+.env.local
+.env.*.local
+*.local
+.DS_Store
+.vite
+*.tsbuildinfo
+
+# OS junk
+.DS_Store
+**/.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Build cache
+*.tsbuildinfo
+
+# Host CLI folders
+.vercel
+.netlify

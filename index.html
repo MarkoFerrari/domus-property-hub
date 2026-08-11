@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Domus — Your properties, in order</title>
+    <meta
+      name="description"
+      content="Domus keeps small Greek landlords out of fine territory and on top of their rental income, for both Airbnb and long-term leases."
+    />
+    <!--
+      Manrope is self-hosted from /public/fonts and declared in src/styles.css.
+      It is deliberately NOT loaded from fonts.googleapis.com: that sends every
+      visitor's IP to Google before they consent to anything, which EU courts
+      have ruled against. Do not add the Google Fonts link back.
+    -->
+    <link
+      rel="preload"
+      href="/fonts/manrope-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/manrope-latin-700-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
