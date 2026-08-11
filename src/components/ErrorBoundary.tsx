@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
+import { appPath } from "../lib/basePath";
 import { Logo } from "./Logo";
 
 /**
@@ -58,7 +59,7 @@ export class ErrorBoundary extends Component<
             <button
               type="button"
               onClick={() => {
-                window.location.href = "/dashboard";
+                window.location.href = appPath("dashboard");
               }}
               className="h-11 rounded-lg border border-[#e5e7eb] px-6 text-[14px] font-semibold text-[#374151]"
             >

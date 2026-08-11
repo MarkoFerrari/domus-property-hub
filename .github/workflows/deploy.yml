@@ -1,0 +1,88 @@
+# Builds Domus and publishes it to GitHub Pages on every push to main.
+#
+# The two Supabase values are injected here from repository secrets. They are
+# VITE_ variables, so Vite bakes them into the JavaScript bundle at build time
+# rather than reading them at runtime. That is expected and safe: the anon key
+# is designed to be public and row-level security is what protects the data.
+# The service_role key must never appear in this file or in repo secrets.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets you re-run a deploy by hand from the Actions tab without pushing code,
+  # which is what you want after changing a secret.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# If you push twice quickly, cancel the older run rather than racing it.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        # A failing test stops the deploy. Better a stale live site than a broken one.
+        run: npm test
+
+      - name: Build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: npm run build
+
+      - name: Fail if the build came out in demo mode
+        # If the secrets are missing or misnamed, the build still succeeds and
+        # quietly ships an app backed by browser storage. That is the single
+        # worst failure mode here, so catch it before it goes live.
+        run: |
+          # Must match a real project URL. A loose "supabase.co" match is not
+          # enough: the supabase-js library itself contains the literal
+          # "*.supabase.co", so a demo build would slip straight past it.
+          if ! grep -rqE "https://[a-z0-9]+\.supabase\.co" dist/assets/*.js; then
+            echo "::error::No Supabase URL found in the bundle. The VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY repository secrets are missing or misnamed, so Domus would deploy in demo mode. Add them under Settings -> Secrets and variables -> Actions, then re-run this workflow."
+            exit 1
+          fi
+          echo "Supabase config found in bundle. Not demo mode."
+
+      - name: Add SPA fallback
+        # GitHub Pages has no rewrite rules. Without this, refreshing on
+        # /dashboard returns a hard 404 instead of loading the app. Pages serves
+        # 404.html while leaving the URL intact, so React Router still sees the
+        # correct path and renders the right screen.
+        run: cp dist/index.html dist/404.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

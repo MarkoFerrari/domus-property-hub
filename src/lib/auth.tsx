@@ -18,6 +18,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { appUrl } from "./basePath";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
 export type AuthUser = {
@@ -201,7 +202,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     const { error } = await supabase!.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/dashboard` },
+      options: { redirectTo: appUrl("dashboard") },
     });
     if (error) throw new Error(friendlyAuthError(error.message));
   }, []);
@@ -262,7 +263,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
     }
     const { error } = await supabase!.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: appUrl("reset-password"),
     });
     // A rate-limit is worth surfacing; "user not found" is not.
     if (error && /rate limit|too many/i.test(error.message)) {

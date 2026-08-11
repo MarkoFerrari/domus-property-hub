@@ -6,13 +6,16 @@ import { Toaster } from "sonner";
 import App from "./App";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AuthProvider } from "./lib/auth";
+import { BASE_PATH } from "./lib/basePath";
 import { StoreProvider } from "./lib/store";
 import "./styles.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <BrowserRouter>
+      {/* basename strips the /domus-property-hub/ prefix before matching routes,
+          so <Route path="/dashboard"> keeps working on GitHub Pages unchanged. */}
+      <BrowserRouter basename={BASE_PATH}>
         <AuthProvider>
           <StoreProvider>
             <App />
