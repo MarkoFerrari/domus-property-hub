@@ -3,8 +3,8 @@ import { Check, Clock, Euro } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Logo, LogoLockup } from "../components/Logo";
-import { DemoModeNote } from "../components/AuthShell";
-import { isSupabaseConfigured } from "../lib/supabase";
+import { appPath } from "../lib/basePath";
+import { startDemo } from "../lib/demoMode";
 
 /**
  * Landing page — source of truth §4.1, Page 1.
@@ -96,12 +96,15 @@ export default function Landing() {
           </ul>
 
           <div className="mt-10 flex flex-col gap-3">
-            <Link
-              to="/signup"
+            {/* A real <button>, not a Link: entering the demo clears any previous
+                visit and reloads, which react-router cannot do. */}
+            <button
+              type="button"
+              onClick={() => startDemo(appPath("welcome"))}
               className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-[#0D0D0D] text-[15px] font-semibold text-white transition-colors hover:bg-[#333333]"
             >
-              Create free account
-            </Link>
+              Try the demo
+            </button>
             <Link
               to="/signin"
               className="inline-flex h-12 w-full items-center justify-center rounded-lg border-[1.5px] border-[#0D0D0D] bg-white text-[15px] font-semibold text-[#0D0D0D] transition-colors hover:bg-[#F9F9F9]"
@@ -110,11 +113,23 @@ export default function Landing() {
             </Link>
           </div>
 
+          {/* Set the expectation BEFORE the click, not after. Someone who enters
+              three properties and then discovers the data was never saved has
+              been wasted, and will not come back for the real thing. */}
+          <div
+            className="mt-6 rounded-xl border px-4 py-3"
+            style={{ borderColor: "#FDE68A", backgroundColor: "#FFFBEB" }}
+          >
+            <p style={{ fontSize: 13, lineHeight: 1.55, color: "#92400E" }}>
+              <strong style={{ fontWeight: 600 }}>This is a demo.</strong> Anything you add is kept
+              in this browser only, never sent anywhere, and gone as soon as you leave or sign out.
+              Start again and you start empty. Accounts that keep your data are coming shortly.
+            </p>
+          </div>
+
           <p className="mt-6 text-[12px] leading-relaxed text-[#9CA3AF]">
             Domus records and reminds. It never moves money and never edits your listings.
           </p>
-
-          {!isSupabaseConfigured ? <DemoModeNote /> : null}
         </div>
       </div>
     </div>

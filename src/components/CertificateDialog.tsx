@@ -6,7 +6,7 @@ import { Modal, Field, WarningNote } from "./patterns";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { Btn, TextInput } from "./ui-primitives";
 import { certStatus, CERT_STATUS_LABEL, type CertRecord } from "../lib/compliance";
-import { isSupabaseConfigured } from "../lib/supabase";
+import { isDemo } from "../lib/demoMode";
 import { certificateUrl, isAcceptedCertFile, MAX_CERT_BYTES } from "../lib/storage";
 
 /**
@@ -136,7 +136,7 @@ export function CertificateDialog({
         <Field
           label="Document"
           hint={
-            isSupabaseConfigured
+            !isDemo()
               ? "PDF or photo, up to 10MB. Stored privately, only your account can open it."
               : "Demo mode cannot store the document itself. Connect a database to keep the file."
           }

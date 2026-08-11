@@ -13,6 +13,11 @@ dist-ssr
 .DS_Store
 **/.DS_Store
 
+# Orphans left behind when a file is rewritten in place on a mounted volume.
+# Harmless, not compiled, never imported. Safe to delete whenever.
+.fuse_hidden*
+**/.fuse_hidden*
+
 # Editor
 .vscode/
 .idea/

@@ -12,7 +12,8 @@
  * certificates + declarations + rent at read time.
  */
 
-import { isSupabaseConfigured, supabase } from "./supabase";
+import { isDemo } from "./demoMode";
+import { supabase } from "./supabase";
 import { CERTIFICATES, type CertRecord, type Property } from "./compliance";
 import {
   deadlineKey,
@@ -101,7 +102,7 @@ let migrationChecked = false;
 function ensureMigrated() {
   if (migrationChecked) return;
   migrationChecked = true; // set first: migrate* uses the raw helpers below
-  if (isSupabaseConfigured) return; // Postgres is migrated by 0003_*.sql
+  if (!isDemo()) return; // Postgres is migrated by 0003_*.sql
   try {
     migrateLocalStorage();
   } catch {
@@ -248,7 +249,7 @@ function propertyToRow(p: Partial<Property>) {
 /* ========================================================================== */
 
 export async function listProperties(userId: string): Promise<Property[]> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     return lsRead<Property[]>(LS.properties, []);
   }
   const sb = supabase!;
@@ -265,7 +266,7 @@ export async function createProperty(
   userId: string,
   data: Omit<Property, "id">,
 ): Promise<Property> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const list = lsRead<Property[]>(LS.properties, []);
     const next: Property = { ...data, id: uid() };
     list.push(next);
@@ -304,7 +305,7 @@ export async function updateProperty(
   id: string,
   patch: Partial<Property>,
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const list = lsRead<Property[]>(LS.properties, []);
     const i = list.findIndex((p) => p.id === id);
     if (i !== -1) {
@@ -326,7 +327,7 @@ export async function updateProperty(
 }
 
 export async function deleteProperty(userId: string, id: string): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     lsWrite(
       LS.properties,
       lsRead<Property[]>(LS.properties, []).filter((p) => p.id !== id),
@@ -360,7 +361,7 @@ export async function setCertificate(
   name: string,
   rec: CertRecord | undefined,
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const list = lsRead<Property[]>(LS.properties, []);
     const i = list.findIndex((p) => p.id === propertyId);
     if (i === -1) return;
@@ -404,7 +405,7 @@ export async function setCertificate(
 const DECL_FIELDS = ["amount", "zero"];
 
 export async function loadDeclarations(userId: string): Promise<Record<string, DeclRecord>> {
-  if (!isSupabaseConfigured) return lsRead<Record<string, DeclRecord>>(LS.declarations, {});
+  if (isDemo()) return lsRead<Record<string, DeclRecord>>(LS.declarations, {});
   const { data, error } = await supabase!
     .from("declarations")
     .select("property_id, month, type, zero, amount, recorded_at")
@@ -429,7 +430,7 @@ async function getDeclaration(
   month: string,
   type: ObligationType,
 ): Promise<DeclRecord | undefined> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     return lsRead<Record<string, DeclRecord>>(LS.declarations, {})[
       obligationKey(propertyId, month, type)
     ];
@@ -459,7 +460,7 @@ export async function saveDeclaration(
 ): Promise<void> {
   const before = await getDeclaration(userId, propertyId, month, type);
 
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const map = lsRead<Record<string, DeclRecord>>(LS.declarations, {});
     map[obligationKey(propertyId, month, type)] = rec;
     lsWrite(LS.declarations, map);
@@ -496,7 +497,7 @@ export async function deleteDeclaration(
 ): Promise<void> {
   const before = await getDeclaration(userId, propertyId, month, type);
 
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const map = lsRead<Record<string, DeclRecord>>(LS.declarations, {});
     delete map[obligationKey(propertyId, month, type)];
     lsWrite(LS.declarations, map);
@@ -519,7 +520,7 @@ export async function deleteDeclaration(
 /* ========================================================================== */
 
 export async function loadRent(userId: string): Promise<Record<string, RentRecord>> {
-  if (!isSupabaseConfigured) return lsRead<Record<string, RentRecord>>(LS.rent, {});
+  if (isDemo()) return lsRead<Record<string, RentRecord>>(LS.rent, {});
   const { data, error } = await supabase!
     .from("rent_payments")
     .select("property_id, month, amount, paid_date, note, recorded_at")
@@ -544,7 +545,7 @@ async function getRent(
   propertyId: string,
   month: string,
 ): Promise<RentRecord | undefined> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     return lsRead<Record<string, RentRecord>>(LS.rent, {})[rentKey(propertyId, month)];
   }
   const { data } = await supabase!
@@ -571,7 +572,7 @@ export async function saveRent(
 ): Promise<void> {
   const before = await getRent(userId, propertyId, month);
 
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const map = lsRead<Record<string, RentRecord>>(LS.rent, {});
     map[rentKey(propertyId, month)] = rec;
     lsWrite(LS.rent, map);
@@ -602,7 +603,7 @@ export async function saveRent(
 export async function deleteRent(userId: string, propertyId: string, month: string): Promise<void> {
   const before = await getRent(userId, propertyId, month);
 
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const map = lsRead<Record<string, RentRecord>>(LS.rent, {});
     delete map[rentKey(propertyId, month)];
     lsWrite(LS.rent, map);
@@ -630,7 +631,7 @@ export async function deleteRent(userId: string, propertyId: string, month: stri
 export async function loadDeadlineOverrides(
   userId: string,
 ): Promise<Record<string, DeadlineOverride>> {
-  if (!isSupabaseConfigured) return lsRead<Record<string, DeadlineOverride>>(LS.overrides, {});
+  if (isDemo()) return lsRead<Record<string, DeadlineOverride>>(LS.overrides, {});
   const { data, error } = await supabase!
     .from("deadline_overrides")
     .select("property_id, month, target, due_date, snoozed_until, updated_at")
@@ -654,7 +655,7 @@ export async function setDeadlineOverride(
   target: DeadlineTarget,
   override: DeadlineOverride,
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const map = lsRead<Record<string, DeadlineOverride>>(LS.overrides, {});
     map[deadlineKey(propertyId, month, target)] = override;
     lsWrite(LS.overrides, map);
@@ -682,7 +683,7 @@ export async function clearDeadlineOverride(
   month: string,
   target: DeadlineTarget,
 ): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const map = lsRead<Record<string, DeadlineOverride>>(LS.overrides, {});
     delete map[deadlineKey(propertyId, month, target)];
     lsWrite(LS.overrides, map);
@@ -703,7 +704,7 @@ export async function clearDeadlineOverride(
 /* ========================================================================== */
 
 export async function loadDismissed(userId: string): Promise<Set<string>> {
-  if (!isSupabaseConfigured) return new Set(lsRead<string[]>(LS.dismissed, []));
+  if (isDemo()) return new Set(lsRead<string[]>(LS.dismissed, []));
   const { data, error } = await supabase!
     .from("dismissed_notifications")
     .select("notification_id")
@@ -713,7 +714,7 @@ export async function loadDismissed(userId: string): Promise<Set<string>> {
 }
 
 export async function dismissNotification(userId: string, notificationId: string): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const set = new Set(lsRead<string[]>(LS.dismissed, []));
     set.add(notificationId);
     lsWrite(LS.dismissed, [...set]);
@@ -726,7 +727,7 @@ export async function dismissNotification(userId: string, notificationId: string
 }
 
 export async function restoreNotification(userId: string, notificationId: string): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     const set = new Set(lsRead<string[]>(LS.dismissed, []));
     set.delete(notificationId);
     lsWrite(LS.dismissed, [...set]);
@@ -745,7 +746,7 @@ export async function restoreNotification(userId: string, notificationId: string
 /* ========================================================================== */
 
 export async function getOnboarded(userId: string): Promise<boolean> {
-  if (!isSupabaseConfigured) return lsRead<boolean>(LS.onboarded, false);
+  if (isDemo()) return lsRead<boolean>(LS.onboarded, false);
   const { data, error } = await supabase!
     .from("profiles")
     .select("onboarded")
@@ -756,7 +757,7 @@ export async function getOnboarded(userId: string): Promise<boolean> {
 }
 
 export async function setOnboarded(userId: string, value: boolean): Promise<void> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     lsWrite(LS.onboarded, value);
     return;
   }
@@ -885,7 +886,7 @@ export async function seedDemoPortfolio(userId: string): Promise<number> {
   if (existing.length > 0) return 0;
   const demo = demoPortfolio();
   for (const p of demo) await createProperty(userId, p);
-  if (!isSupabaseConfigured) lsWrite(LS.seeded, true);
+  if (isDemo()) lsWrite(LS.seeded, true);
   return demo.length;
 }
 

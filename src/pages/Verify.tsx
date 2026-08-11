@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { AuthShell } from "../components/AuthShell";
 import { Btn, ErrorBanner } from "../components/ui-primitives";
 import { DEMO_OTP, useAuth } from "../lib/auth";
-import { isSupabaseConfigured } from "../lib/supabase";
+import { isDemo } from "../lib/demoMode";
 
 const LENGTH = 6;
 const COUNTDOWN_SECONDS = 5 * 60;
@@ -123,7 +123,7 @@ export default function Verify() {
   };
 
   // Nothing to verify and nobody signed in — start over.
-  if (!pendingEmail && !user) return <Navigate to="/signup" replace />;
+  if (!pendingEmail && !user) return <Navigate to="/signin" replace />;
 
   const displayEmail = pendingEmail ?? user?.email ?? "you@example.com";
 
@@ -208,7 +208,7 @@ export default function Verify() {
           </p>
         </div>
 
-        {!isSupabaseConfigured ? (
+        {isDemo() ? (
           <div className="mt-4">
             <ErrorBanner>
               Demo mode — the code is <strong className="font-bold">{DEMO_OTP}</strong>.

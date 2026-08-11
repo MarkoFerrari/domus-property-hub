@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { ReactNode } from "react";
-import { isSupabaseConfigured } from "../lib/supabase";
+import { isDemo } from "../lib/demoMode";
 
 /**
  * Shared layout for Sign up / Sign in / Verify — source of truth §4.1.
@@ -44,7 +44,7 @@ export function AuthShell({
 
         {footer ? <div className="mt-5">{footer}</div> : null}
 
-        {!isSupabaseConfigured ? <DemoModeNote /> : null}
+        {isDemo() ? <DemoModeNote /> : null}
       </div>
     </div>
   );
@@ -53,10 +53,9 @@ export function AuthShell({
 export function DemoModeNote() {
   return (
     <p className="mt-8 rounded-lg border border-[#E8E8E8] bg-[#F9F9F9] px-4 py-3 text-[12px] leading-relaxed text-[#6B7280]">
-      <strong className="font-semibold text-[#0D0D0D]">Demo mode.</strong> No database is connected,
-      so accounts and data live in this browser only. The email verification code is{" "}
-      <strong className="font-semibold text-[#0D0D0D]">123456</strong>. Add your Supabase keys to{" "}
-      <code>.env</code> for real accounts.
+      <strong className="font-semibold text-[#0D0D0D]">Demo.</strong> Accounts and data live in this
+      browser only and disappear when you leave. The verification code, if you are asked for one, is{" "}
+      <strong className="font-semibold text-[#0D0D0D]">123456</strong>.
     </p>
   );
 }

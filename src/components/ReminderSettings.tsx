@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { SectionCard } from "./patterns";
 import { SelectInput } from "./ui-primitives";
 import { useAuth } from "../lib/auth";
-import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { isDemo } from "../lib/demoMode";
+import { supabase } from "../lib/supabase";
 
 /**
  * Reminder email preferences.
@@ -25,7 +26,7 @@ export function ReminderSettings() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!isSupabaseConfigured || !user) {
+    if (isDemo() || !user) {
       setLoading(false);
       return;
     }
@@ -46,7 +47,7 @@ export function ReminderSettings() {
     };
   }, [user]);
 
-  if (!isSupabaseConfigured) return null;
+  if (isDemo()) return null;
 
   const save = async (next: { enabled?: boolean; leadDays?: number }) => {
     if (!user) return;

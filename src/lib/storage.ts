@@ -16,7 +16,8 @@
  *     record is flagged `demo: true` and the UI says the document is not kept.
  */
 
-import { isSupabaseConfigured, supabase } from "./supabase";
+import { isDemo } from "./demoMode";
+import { supabase } from "./supabase";
 import type { CertRecord } from "./compliance";
 
 export const CERT_BUCKET = "certificates";
@@ -75,7 +76,7 @@ export async function uploadCertificate(
     throw new Error("Attach a PDF or a photo (JPG, PNG or HEIC).");
   }
 
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     // Demo mode: no bytes are kept, and the record says so rather than pretending.
     return { file: file.name, path: undefined, demo: true };
   }
@@ -100,7 +101,7 @@ export async function uploadCertificate(
  * and a link cannot leak by being forwarded a week later.
  */
 export async function certificateUrl(path: string, expiresInSeconds = 60): Promise<string | null> {
-  if (!isSupabaseConfigured) return null;
+  if (isDemo()) return null;
   const { data, error } = await supabase!.storage
     .from(CERT_BUCKET)
     .createSignedUrl(path, expiresInSeconds);
@@ -113,7 +114,7 @@ export async function certificateUrl(path: string, expiresInSeconds = 60): Promi
  * object costs storage, a blocked update costs the landlord their correction.
  */
 export async function deleteCertificateFile(path: string | undefined): Promise<void> {
-  if (!path || !isSupabaseConfigured) return;
+  if (!path || isDemo()) return;
   try {
     await supabase!.storage.from(CERT_BUCKET).remove([path]);
   } catch {

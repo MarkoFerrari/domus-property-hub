@@ -6,7 +6,10 @@ import { useStore } from "./lib/store";
 import { Logo } from "./components/Logo";
 
 import Landing from "./pages/Landing";
-import SignUp from "./pages/SignUp";
+/* SignUp is deliberately not imported: the page still exists and still works,
+   but leaving it wired in would ship the whole sign-up flow in the bundle for a
+   route nobody can reach. To reopen sign-ups, restore this import and swap the
+   /signup route below back to <PublicOnly><SignUp /></PublicOnly>. */
 import SignIn from "./pages/SignIn";
 import Verify from "./pages/Verify";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -81,7 +84,11 @@ export default function App() {
     <Routes>
       {/* public */}
       <Route path="/" element={<PublicOnly><Landing /></PublicOnly>} />
-      <Route path="/signup" element={<PublicOnly><SignUp /></PublicOnly>} />
+      {/* Sign-up is closed during the pilot. The route stays mapped rather than
+          deleted so old links and bookmarks land somewhere sensible instead of
+          on the 404 page. See the import block at the top of this file for how
+          to reopen it once custom SMTP is configured. */}
+      <Route path="/signup" element={<Navigate to="/signin" replace />} />
       <Route path="/signin" element={<PublicOnly><SignIn /></PublicOnly>} />
       <Route path="/verify" element={<Verify />} />
       <Route path="/forgot-password" element={<PublicOnly><ForgotPassword /></PublicOnly>} />

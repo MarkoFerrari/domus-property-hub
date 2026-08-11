@@ -10,7 +10,7 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { ReminderSettings } from "../components/ReminderSettings";
 import { useAuth } from "../lib/auth";
 import { useStore } from "../lib/store";
-import { isSupabaseConfigured } from "../lib/supabase";
+import { isDemo } from "../lib/demoMode";
 import { resetDemoData } from "../lib/db";
 import {
   buildCertificatesCsv,
@@ -91,21 +91,21 @@ export default function Settings() {
             <div
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
               style={{
-                backgroundColor: isSupabaseConfigured ? "#dcfce7" : "#fef3c7",
-                color: isSupabaseConfigured ? "#15803d" : "#b45309",
+                backgroundColor: !isDemo() ? "#dcfce7" : "#fef3c7",
+                color: !isDemo() ? "#15803d" : "#b45309",
               }}
               aria-hidden="true"
             >
-              {isSupabaseConfigured ? <Database size={18} /> : <HardDrive size={18} />}
+              {!isDemo() ? <Database size={18} /> : <HardDrive size={18} />}
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>
-                {isSupabaseConfigured ? "Connected to your database" : "Demo mode"}
+                {!isDemo() ? "Connected to your database" : "Demo. Nothing is saved"}
               </div>
               <p className="mt-1" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
-                {isSupabaseConfigured
+                {!isDemo()
                   ? "Your portfolio is stored in your own Supabase project. Row-level security means only your account can read or write your rows."
-                  : "No database is connected, so everything is saved in this browser only. Clearing your browser data wipes it, and it will not appear on another device. Add your Supabase keys to .env to switch to a real database."}
+                  : "Everything you have entered is held in this browser and has never left your device. Signing out, clearing your browser, or opening Domus somewhere else all start you from empty. There is no copy and no way to recover it."}
               </p>
             </div>
           </div>
@@ -178,7 +178,7 @@ export default function Settings() {
                 <LogOut size={16} aria-hidden="true" /> Log out
               </Btn>
             </div>
-            {!isSupabaseConfigured ? (
+            {isDemo() ? (
               <div className="sm:w-[220px]">
                 <Btn
                   variant="secondary"
@@ -192,7 +192,7 @@ export default function Settings() {
           </div>
         </SectionCard>
 
-        {isSupabaseConfigured ? (
+        {!isDemo() ? (
           <SectionCard title="Delete your account">
             <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
               Removes your account and everything attached to it: every property, declaration, rent

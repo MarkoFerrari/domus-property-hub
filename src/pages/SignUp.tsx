@@ -51,8 +51,14 @@ export default function SignUp() {
 
     setLoading(true);
     try {
-      await signUp({ fullName: fullName.trim(), email: email.trim(), password });
-      navigate("/verify");
+      const { needsVerification } = await signUp({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        password,
+      });
+      // With email confirmation off, Supabase signs them in immediately and
+      // there is no code to enter. Skip straight to onboarding.
+      navigate(needsVerification ? "/verify" : "/welcome", { replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong. Try again.";
       if (message.toLowerCase().includes("already exists")) setEmailTaken(true);

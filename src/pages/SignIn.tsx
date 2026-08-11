@@ -6,6 +6,8 @@ import { AuthShell } from "../components/AuthShell";
 import { GoogleAuthButton } from "../components/GoogleAuthButton";
 import { Btn, ErrorBanner, LabelledInput } from "../components/ui-primitives";
 import { useAuth } from "../lib/auth";
+import { appPath } from "../lib/basePath";
+import { startDemo } from "../lib/demoMode";
 
 /** Sign in — source of truth §4.1, Page 3. */
 export default function SignIn() {
@@ -59,11 +61,15 @@ export default function SignIn() {
       title="Welcome back"
       subtitle="Sign in to your portfolio."
       footer={
-        <p className="text-center text-[14px] text-[#6B7280]">
-          No account yet?{" "}
-          <Link to="/signup" className="font-semibold text-[#0D0D0D] underline">
-            Create one
-          </Link>
+        <p className="text-center text-[14px] leading-relaxed text-[#6B7280]">
+          No account yet? Sign-ups are not open during the pilot.{" "}
+          <button
+            type="button"
+            onClick={() => startDemo(appPath("welcome"))}
+            className="font-semibold text-[#0D0D0D] underline"
+          >
+            Try the demo instead
+          </button>
         </p>
       }
     >
@@ -112,11 +118,8 @@ export default function SignIn() {
           <ErrorBanner>
             {noAccount ? (
               <>
-                No account found with this email.{" "}
-                <Link to="/signup" className="text-[#DC2626] underline">
-                  Create one
-                </Link>
-                .
+                No account found with this email. Sign-ups are not open yet, so if you were expecting
+                access, check the address or get in touch.
               </>
             ) : (
               banner

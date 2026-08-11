@@ -18,8 +18,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { appUrl } from "./basePath";
-import { isSupabaseConfigured, supabase } from "./supabase";
+import { appPath, appUrl } from "./basePath";
+import { DEMO_USER_KEY, exitDemo, isDemo } from "./demoMode";
+import { supabase } from "./supabase";
 
 export type AuthUser = {
   id: string;
@@ -29,7 +30,6 @@ export type AuthUser = {
 
 export const DEMO_OTP = "123456";
 
-const DEMO_USER_KEY = "domus.demo.user";
 const DEMO_PENDING_KEY = "domus.demo.pending";
 const DEMO_PENDING_NAME_KEY = "domus.demo.pendingName";
 
@@ -38,7 +38,20 @@ type AuthContextValue = {
   loading: boolean;
   /** Email awaiting OTP verification, if any. */
   pendingEmail: string | null;
-  signUp: (input: { fullName: string; email: string; password: string }) => Promise<void>;
+  /**
+   * Resolves with whether the landlord still has to enter an emailed code.
+   *
+   * Supabase decides this, not us: with "Confirm email" on it withholds the
+   * session until the code is entered, and with it off it returns one straight
+   * away. Reporting which happened lets the sign-up screen route correctly
+   * under either setting, instead of always sending people to a code screen
+   * that may have no code to give.
+   */
+  signUp: (input: {
+    fullName: string;
+    email: string;
+    password: string;
+  }) => Promise<{ needsVerification: boolean }>;
   signIn: (input: { email: string; password: string }) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   verifyOtp: (code: string) => Promise<void>;
@@ -102,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
 
-    if (!isSupabaseConfigured) {
+    if (isDemo()) {
       setUser(readDemoUser());
       try {
         setPendingEmail(localStorage.getItem(DEMO_PENDING_KEY));
@@ -149,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /* -------------------------------------------------------------- sign up -- */
   const signUp = useCallback<AuthContextValue["signUp"]>(async ({ fullName, email, password }) => {
-    if (!isSupabaseConfigured) {
+    if (isDemo()) {
       const existing = readDemoUser();
       if (existing && existing.email.toLowerCase() === email.toLowerCase()) {
         throw new Error("An account with this email already exists.");
@@ -162,7 +175,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(DEMO_PENDING_KEY, email);
       localStorage.setItem(DEMO_PENDING_NAME_KEY, JSON.stringify({ fullName, email }));
       setPendingEmail(email);
-      return;
+      // Demo mode always walks the code screen, so the flow can be shown off
+      // end to end without a database. The code is 123456 and the UI says so.
+      return { needsVerification: true };
     }
 
     const { data, error } = await supabase!.auth.signUp({
@@ -176,12 +191,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
       throw new Error("An account with this email already exists.");
     }
+
+    /* A session here means Supabase's "Confirm email" setting is off, so the
+       landlord is already signed in and there is no code coming. Sending them
+       to the verification screen would strand them in front of six empty boxes
+       waiting for an email that will never arrive. */
+    if (data.session) {
+      setPendingEmail(null);
+      return { needsVerification: false };
+    }
+
     setPendingEmail(email);
+    return { needsVerification: true };
   }, []);
 
   /* -------------------------------------------------------------- sign in -- */
   const signIn = useCallback<AuthContextValue["signIn"]>(async ({ email, password }) => {
-    if (!isSupabaseConfigured) {
+    if (isDemo()) {
       const existing = readDemoUser();
       if (!existing) {
         throw new Error("No account found with this email.");
@@ -197,7 +223,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
-    if (!isSupabaseConfigured) {
+    if (isDemo()) {
       throw new Error("Google sign-in needs Supabase. Connect it in .env, then enable the Google provider.");
     }
     const { error } = await supabase!.auth.signInWithOAuth({
@@ -210,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   /* ----------------------------------------------------------- verify OTP -- */
   const verifyOtp = useCallback<AuthContextValue["verifyOtp"]>(
     async (code) => {
-      if (!isSupabaseConfigured) {
+      if (isDemo()) {
         if (code !== DEMO_OTP) {
           throw new Error("Incorrect code. Please try again or request a new one.");
         }
@@ -240,7 +266,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const resendOtp = useCallback(async () => {
-    if (!isSupabaseConfigured) return;
+    if (isDemo()) return;
     const email = pendingEmail;
     if (!email) return;
     const { error } = await supabase!.auth.resend({ type: "signup", email });
@@ -257,7 +283,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * an account, a link is on its way" and means it.
    */
   const requestPasswordReset = useCallback(async (email: string) => {
-    if (!isSupabaseConfigured) {
+    if (isDemo()) {
       throw new Error(
         "Password reset needs a connected database. In demo mode there is no real account to reset.",
       );
@@ -272,7 +298,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updatePassword = useCallback(async (password: string) => {
-    if (!isSupabaseConfigured) throw new Error("Password reset needs a connected database.");
+    if (isDemo()) throw new Error("Password reset needs a connected database.");
     const { error } = await supabase!.auth.updateUser({ password });
     if (error) throw new Error(friendlyAuthError(error.message));
   }, []);
@@ -285,7 +311,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * auth.users, so one delete takes the whole portfolio with it.
    */
   const deleteAccount = useCallback(async () => {
-    if (!isSupabaseConfigured) {
+    if (isDemo()) {
       throw new Error("There is no server account to delete in demo mode. Use Reset all demo data.");
     }
     const sb = supabase!;
@@ -307,9 +333,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /* ------------------------------------------------------------- sign out -- */
   const signOut = useCallback(async () => {
-    if (!isSupabaseConfigured) {
-      localStorage.removeItem(DEMO_USER_KEY);
-      setUser(null);
+    if (isDemo()) {
+      /* Leaving the demo bins the whole visit, not just the session. The promise
+         made on the landing page is that nothing survives, so a half-exit that
+         left properties in localStorage would quietly break it. exitDemo also
+         reloads, which is what drops the app back out of demo mode. */
+      exitDemo(appPath(""));
       return;
     }
     await supabase!.auth.signOut();

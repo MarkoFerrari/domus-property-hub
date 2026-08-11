@@ -23,7 +23,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Logo } from "./Logo";
 import { useAuth } from "../lib/auth";
 import { useStore } from "../lib/store";
-import { isSupabaseConfigured } from "../lib/supabase";
+import { isDemo, isMisconfigured } from "../lib/demoMode";
 
 export type NavKey = "dashboard" | "properties" | "notifications";
 
@@ -87,7 +87,7 @@ export function AppShell({
         <div className="px-5 py-4" style={{ color: "#525252", fontSize: 11, lineHeight: 1.5 }}>
           POC v3 — Greece pilot
           <br />
-          {isSupabaseConfigured ? "Connected to your database" : "Demo data. Build v0.4"}
+          {isDemo() ? "Demo. Data stays in this browser" : "Connected to your database"}
         </div>
       </aside>
 
@@ -405,28 +405,53 @@ function LoadFailureBanner() {
 }
 
 /**
- * Demo mode on a real domain means someone deployed without env vars. The build
- * succeeds, every screen works, and the landlord's data lives only in their own
- * browser. Small grey sidebar text was not enough of a warning for that.
+ * Two different warnings that used to be one.
+ *
+ * A visitor who chose the demo needs a calm reminder that their data is
+ * temporary. A deployment with no database at all is a fault, and the person
+ * looking at it may believe they are using the real product. Showing the same
+ * banner for both made the first alarming and the second reassuring, which is
+ * exactly backwards.
  */
 function UnsafeDemoBanner() {
-  if (isSupabaseConfigured) return null;
   const host = window.location.hostname;
   const isLocal = host === "localhost" || host === "127.0.0.1" || host.endsWith(".local");
-  if (isLocal) return null;
+
+  if (isMisconfigured()) {
+    if (isLocal) return null;
+    return (
+      <div
+        role="alert"
+        className="mx-auto mb-5 w-full max-w-[1200px] rounded-xl border px-4 py-3"
+        style={{ borderColor: "#FCA5A5", backgroundColor: "#FEF2F2" }}
+      >
+        <div className="flex items-start gap-3">
+          <AlertTriangle size={18} color="#B91C1C" className="mt-0.5 shrink-0" aria-hidden="true" />
+          <p style={{ fontSize: 13, color: "#991B1B", lineHeight: 1.55 }}>
+            <strong style={{ fontWeight: 700 }}>No database connected, on a live address.</strong>{" "}
+            This build shipped without its Supabase keys, so everything entered here is saved in
+            this browser only. This is a deployment fault, not a demo. Do not use it for real
+            records.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isDemo()) return null;
+
   return (
     <div
-      role="alert"
       className="mx-auto mb-5 w-full max-w-[1200px] rounded-xl border px-4 py-3"
       style={{ borderColor: "#FDE68A", backgroundColor: "#FFFBEB" }}
     >
       <div className="flex items-start gap-3">
         <AlertTriangle size={18} color="#B45309" className="mt-0.5 shrink-0" aria-hidden="true" />
         <p style={{ fontSize: 13, color: "#92400E", lineHeight: 1.55 }}>
-          <strong style={{ fontWeight: 700 }}>Demo mode, on a live address.</strong> No database is
-          connected, so everything you enter here is saved in this browser only. It will not reach
-          another device and clearing your browser wipes it. Do not use this for real records until
-          the database is connected.
+          <strong style={{ fontWeight: 600 }}>You are in the demo.</strong> Everything here is kept
+          in this browser and never sent anywhere. Signing out or clearing your browser wipes it,
+          and there is no way to get it back. Have a proper look around, just do not type in
+          anything you need to keep.
         </p>
       </div>
     </div>

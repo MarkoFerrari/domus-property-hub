@@ -16,7 +16,8 @@
  * Storage mirrors `db.ts`: Supabase when configured, localStorage otherwise.
  */
 
-import { isSupabaseConfigured, supabase } from "./supabase";
+import { isDemo } from "./demoMode";
+import { supabase } from "./supabase";
 
 /** One change to one field. `from` undefined means the field had no value. */
 export type HistoryEntry = {
@@ -102,7 +103,7 @@ export async function appendHistory(
   if (entries.length === 0) return;
 
   try {
-    if (!isSupabaseConfigured) {
+    if (isDemo()) {
       const key = historyKey(propertyId, month);
       const existing = readLocal(key);
       localStorage.setItem(key, JSON.stringify([...existing, ...entries]));
@@ -136,7 +137,7 @@ export async function readHistory(
   propertyId: string,
   month: string,
 ): Promise<HistoryEntry[]> {
-  if (!isSupabaseConfigured) {
+  if (isDemo()) {
     return sortByTs(readLocal(historyKey(propertyId, month)));
   }
 
