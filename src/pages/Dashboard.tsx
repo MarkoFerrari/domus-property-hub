@@ -342,44 +342,66 @@ function ActionQueueCard() {
 
       {visible.length > 0 ? (
         <div className="mt-4 flex flex-col divide-y" style={{ borderColor: "#f3f4f6" }}>
+          {/* Stacks on mobile, single row from sm up. The row packed an icon,
+              two lines of text, a pill and a button onto a phone width, which
+              truncated the title to nothing useful and squeezed the button to
+              30px. Same elements, given room. */}
           {visible.map((it) => (
-            <div key={it.id} className="flex items-center gap-3 py-3">
-              <div
-                className="flex shrink-0 items-center justify-center rounded-lg"
-                style={{
-                  width: 32,
-                  height: 32,
-                  backgroundColor:
-                    it.source === "rent" ? "#171717" : it.priority === "medium" ? "#b45309" : "#7f1d1d",
-                  color: "#fff",
-                }}
-                aria-hidden="true"
-              >
-                {it.source === "rent" ? <Euro size={16} /> : <AlertCircle size={16} />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="truncate" style={{ fontWeight: 600, fontSize: 13, color: "#111827" }}>
-                  {it.title}
+            <div
+              key={it.id}
+              className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:gap-3"
+            >
+              <div className="flex min-w-0 items-start gap-3 sm:flex-1 sm:items-center">
+                <div
+                  className="flex shrink-0 items-center justify-center rounded-lg"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    backgroundColor:
+                      it.source === "rent"
+                        ? "#171717"
+                        : it.priority === "medium"
+                          ? "#b45309"
+                          : "#7f1d1d",
+                    color: "#fff",
+                  }}
+                  aria-hidden="true"
+                >
+                  {it.source === "rent" ? <Euro size={16} /> : <AlertCircle size={16} />}
                 </div>
-                <div className="truncate" style={{ fontSize: 12, color: "#6b7280" }}>
-                  {it.subtitle}
+                <div className="min-w-0 flex-1">
+                  {/* Full title on mobile. A deadline truncated mid-word is
+                      worse than no deadline: it looks handled. */}
+                  <div
+                    className="sm:truncate"
+                    style={{ fontWeight: 600, fontSize: 13, color: "#111827", lineHeight: 1.4 }}
+                  >
+                    {it.title}
+                  </div>
+                  <div
+                    className="sm:truncate"
+                    style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.45 }}
+                  >
+                    {it.subtitle}
+                  </div>
                 </div>
               </div>
-              <SeverityPill severity={it.priority} />
+
+              <div className="flex shrink-0 items-center gap-3">
+                <SeverityPill severity={it.priority} />
+              </div>
+
               <Link
                 to={it.to}
-                className="tap-44"
+                className="flex w-full shrink-0 items-center justify-center rounded-lg sm:w-auto"
                 style={{
-                  height: 30,
-                  padding: "0 12px",
-                  borderRadius: 8,
+                  minHeight: 44,
+                  padding: "0 16px",
                   border: "1px solid #e5e7eb",
                   backgroundColor: "#fff",
                   color: "#374151",
                   fontWeight: 600,
-                  fontSize: 12,
-                  display: "inline-flex",
-                  alignItems: "center",
+                  fontSize: 13,
                   whiteSpace: "nowrap",
                 }}
               >

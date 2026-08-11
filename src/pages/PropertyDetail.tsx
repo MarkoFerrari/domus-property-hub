@@ -39,6 +39,7 @@ import {
   type MonthRef,
   type ObligationType,
 } from "../lib/ledger";
+import { getPropertyStatus } from "../lib/notifications";
 import { DEADLINE_CAVEAT_LONG } from "../lib/legal";
 
 type Tab = "overview" | "payments";
@@ -54,6 +55,7 @@ export default function PropertyDetail() {
     loading,
     declarations,
     rents,
+    notifications,
     saveCertificate,
     removeCertificate,
     recordDeclaration,
@@ -109,6 +111,9 @@ export default function PropertyDetail() {
   /* DERIVED on every render — never read from a stored field. */
   const compliance = getCompliance(property);
   const message = complianceMessage(compliance);
+  /* The headline pill covers everything outstanding, not just certificates.
+     `compliance` is still used below for the certificate banner and grid. */
+  const headlineStatus = getPropertyStatus(property.id, notifications);
 
   const setTab = (next: Tab) => {
     const p = new URLSearchParams(params);
@@ -173,8 +178,10 @@ export default function PropertyDetail() {
               <span style={{ fontSize: 13, color: "#6b7280" }}>
                 {[property.address, property.city].filter(Boolean).join(", ") || "No address set"}
               </span>
-              <StatusPill status={compliance.status} size="sm">
-                {COMPLIANCE_LABEL[compliance.status]}
+              {/* Same feed as the card and the badge. A green pill here on a
+                  property with unrecorded months would contradict both. */}
+              <StatusPill status={headlineStatus} size="sm">
+                {COMPLIANCE_LABEL[headlineStatus]}
               </StatusPill>
             </div>
           </div>

@@ -5,6 +5,7 @@ import { AppShell } from "../components/AppShell";
 import { Card, EmptyBlock, Skeleton, StatusPill, TypeTag } from "../components/patterns";
 import { useStore } from "../lib/store";
 import { COMPLIANCE_LABEL, getCompliance, type Property } from "../lib/compliance";
+import { getPropertyStatus } from "../lib/notifications";
 
 /** Properties list. Compliance badges are derived on every render. */
 export default function PropertiesList() {
@@ -80,6 +81,11 @@ export default function PropertiesList() {
 }
 
 function PropertyCard({ property }: { property: Property }) {
+  const { notifications } = useStore();
+  /* Not getCompliance() — that only knows about certificates, so it called a
+     property with zero recorded months "Compliant" while the badge counted
+     twelve overdue declarations. See getPropertyStatus for the reasoning. */
+  const status = getPropertyStatus(property.id, notifications);
   const compliance = getCompliance(property);
   const outstanding = compliance.outstanding.length;
 
@@ -115,8 +121,8 @@ function PropertyCard({ property }: { property: Property }) {
               <TypeTag type={property.type} />
             </div>
           </div>
-          <StatusPill status={compliance.status} size="sm">
-            {COMPLIANCE_LABEL[compliance.status]}
+          <StatusPill status={status} size="sm">
+            {COMPLIANCE_LABEL[status]}
           </StatusPill>
         </div>
 

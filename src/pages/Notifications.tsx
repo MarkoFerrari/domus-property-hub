@@ -129,22 +129,36 @@ export default function Notifications() {
               </div>
               <ul className="flex flex-col divide-y" style={{ borderColor: "#f3f4f6" }}>
                 {dismissedItems.map((n) => (
-                  <li key={n.id} className="flex items-center gap-3 py-3">
+                  <li
+                    key={n.id}
+                    className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:gap-3"
+                  >
                     <div className="min-w-0 flex-1">
-                      <div className="truncate" style={{ fontSize: 13, fontWeight: 600, color: "#6b7280" }}>
+                      <div
+                        className="sm:truncate"
+                        style={{ fontSize: 13, fontWeight: 600, color: "#6b7280", lineHeight: 1.4 }}
+                      >
                         {n.title}
                       </div>
-                      <div className="truncate" style={{ fontSize: 12, color: "#9ca3af" }}>
+                      <div
+                        className="sm:truncate"
+                        style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.45 }}
+                      >
                         {n.subtitle}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => restore(n.id)}
-                      className="tap-44 inline-flex items-center gap-1.5 rounded-lg border px-3 text-[12px] font-semibold text-[#374151]"
-                      style={{ height: 30, borderColor: "#e5e7eb", backgroundColor: "#fff" }}
+                      className="inline-flex w-full shrink-0 items-center justify-center gap-1.5 rounded-lg border text-[13px] font-semibold text-[#374151] sm:w-auto sm:text-[12px]"
+                      style={{
+                        minHeight: 44,
+                        padding: "0 16px",
+                        borderColor: "#e5e7eb",
+                        backgroundColor: "#fff",
+                      }}
                     >
-                      <Undo2 size={13} aria-hidden="true" /> Unsnooze
+                      <Undo2 size={14} aria-hidden="true" /> Unsnooze
                     </button>
                   </li>
                 ))}
@@ -163,41 +177,65 @@ function sourceIcon(source: NotificationItem["source"]) {
   return <ShieldAlert size={16} />;
 }
 
+/**
+ * One notification.
+ *
+ * MOBILE: severity label first, then title, then the actions on their own row.
+ * Priority is the thing that decides whether this is read now or later, so it
+ * leads. It used to sit in the middle of a wrapping flex row, which on a phone
+ * put it in a different place on every card depending on how long the title
+ * was, and there is no scanning a list whose severity marker moves around.
+ *
+ * DESKTOP: unchanged single row, where horizontal space makes that the denser
+ * and faster layout.
+ */
 function NotificationRow({ item, onDismiss }: { item: NotificationItem; onDismiss: () => void }) {
   return (
-    <li className="flex flex-wrap items-center gap-3 py-4">
-      <div
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-        style={{
-          backgroundColor: item.priority === "high" ? "#7f1d1d" : "#b45309",
-          color: "#fff",
-        }}
-        aria-hidden="true"
-      >
-        {sourceIcon(item.source)}
+    <li className="flex flex-col gap-3 py-4 sm:flex-row sm:flex-wrap sm:items-center">
+      {/* Mobile only: the label leads the card. */}
+      <div className="sm:hidden">
+        <SeverityPill severity={item.priority} />
       </div>
 
-      <div className="min-w-[200px] flex-1">
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#111827", lineHeight: 1.35 }}>
-          {item.title}
+      <div className="flex min-w-0 items-start gap-3 sm:flex-1 sm:items-center">
+        <div
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+          style={{
+            backgroundColor: item.priority === "high" ? "#7f1d1d" : "#b45309",
+            color: "#fff",
+          }}
+          aria-hidden="true"
+        >
+          {sourceIcon(item.source)}
         </div>
-        <div className="mt-0.5" style={{ fontSize: 12, color: "#6b7280" }}>
-          {item.subtitle}
+
+        <div className="min-w-0 flex-1 sm:min-w-[200px]">
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#111827", lineHeight: 1.35 }}>
+            {item.title}
+          </div>
+          <div className="mt-0.5" style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.45 }}>
+            {item.subtitle}
+          </div>
         </div>
       </div>
 
       <span className="sr-only">{PRIORITY_LABEL[item.priority]}</span>
-      <SeverityPill severity={item.priority} />
 
-      <div className="flex items-center gap-2">
+      {/* Desktop only: the pill sits inline, where it always has. */}
+      <div className="hidden sm:block">
+        <SeverityPill severity={item.priority} />
+      </div>
+
+      {/* 16px gap. Snooze is destructive-adjacent and sits next to the action
+          people actually want, so it needs clear separation from it. */}
+      <div className="flex shrink-0 items-stretch gap-4">
         <Link
           to={item.to}
-          className="tap-44 rounded-lg px-3 text-[12px] font-semibold text-white"
+          className="flex flex-1 items-center justify-center rounded-lg text-[14px] font-semibold text-white sm:flex-none sm:text-[12px]"
           style={{
-            height: 32,
+            minHeight: 44,
+            padding: "0 16px",
             backgroundColor: "#171717",
-            display: "inline-flex",
-            alignItems: "center",
             whiteSpace: "nowrap",
           }}
         >
@@ -207,10 +245,16 @@ function NotificationRow({ item, onDismiss }: { item: NotificationItem; onDismis
           type="button"
           onClick={onDismiss}
           aria-label={`Snooze: ${item.title}`}
-          className="tap-44 inline-flex items-center justify-center rounded-lg border transition-colors hover:bg-[#fafafa]"
-          style={{ height: 32, width: 32, borderColor: "#e5e7eb", backgroundColor: "#fff", color: "#6b7280" }}
+          className="inline-flex shrink-0 items-center justify-center rounded-lg border transition-colors hover:bg-[#fafafa]"
+          style={{
+            minHeight: 44,
+            minWidth: 44,
+            borderColor: "#e5e7eb",
+            backgroundColor: "#fff",
+            color: "#6b7280",
+          }}
         >
-          <BellOff size={14} aria-hidden="true" />
+          <BellOff size={16} aria-hidden="true" />
         </button>
       </div>
     </li>

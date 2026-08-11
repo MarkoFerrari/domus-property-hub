@@ -213,3 +213,30 @@ export function getNotifications(
 export function getNotificationCount(items: NotificationItem[], dismissed: Set<string>): number {
   return items.filter((n) => n.priority === "high" && !dismissed.has(n.id)).length;
 }
+
+/**
+ * The single status shown on a property card.
+ *
+ * WHY THIS EXISTS: the card used to read `getCompliance()`, which only looks at
+ * certificates. A property with valid certificates and not one month recorded
+ * showed a green "Compliant" pill while simultaneously generating a stack of
+ * high-priority notifications about those very months. The badge said one
+ * thing, the card said the opposite, and the card is the reassuring one.
+ *
+ * Green here has to mean "nothing outstanding on this property", so it is
+ * derived from the same feed the badges and the action queue already use.
+ * There is no second rule to drift out of step with the first.
+ *
+ * Dismissed items still count. Snoozing a reminder hides the nagging; it does
+ * not file the declaration, and a card that goes green because someone pressed
+ * snooze would be the same lie in a new place.
+ */
+export function getPropertyStatus(
+  propertyId: string,
+  items: NotificationItem[],
+): "compliant" | "renew" | "action" {
+  const mine = items.filter((n) => n.propertyId === propertyId);
+  if (mine.some((n) => n.priority === "high")) return "action";
+  if (mine.length > 0) return "renew";
+  return "compliant";
+}
