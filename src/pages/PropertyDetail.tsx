@@ -182,7 +182,7 @@ export default function PropertyDetail() {
           <div className="flex gap-2">
             <Link
               to={`/properties/${property.id}/edit`}
-              className="inline-flex items-center gap-1.5 rounded-lg border px-3 text-[13px] font-semibold text-[#374151]"
+              className="tap-44 inline-flex items-center gap-1.5 rounded-lg border px-3 text-[13px] font-semibold text-[#374151]"
               style={{ height: 36, borderColor: "#e5e7eb", backgroundColor: "#fff" }}
             >
               <Pencil size={14} aria-hidden="true" /> Edit property
@@ -190,7 +190,7 @@ export default function PropertyDetail() {
             <button
               type="button"
               onClick={() => setDeleteOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border px-3 text-[13px] font-semibold text-[#b91c1c]"
+              className="tap-44 inline-flex items-center gap-1.5 rounded-lg border px-3 text-[13px] font-semibold text-[#b91c1c]"
               style={{ height: 36, borderColor: "#fecaca", backgroundColor: "#fff" }}
             >
               <Trash2 size={14} aria-hidden="true" /> Delete
@@ -489,8 +489,55 @@ function PaymentsTab({
         </p>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full" style={{ borderCollapse: "collapse", minWidth: 560 }}>
+      {/* MOBILE: stacked cards.
+          The table below needs 560px to hold its five columns, which on a phone
+          meant sideways scrolling to reach the one thing anyone came here to
+          press. Worse, the action column was the part pushed off-screen, so the
+          button was invisible until you scrolled. Same data, same handlers,
+          stacked vertically instead. */}
+      <ul className="flex flex-col gap-3 sm:hidden">
+        {rows.map((r) => (
+          <li
+            key={r.key}
+            className="rounded-xl border p-4"
+            style={{ borderColor: "#f3f4f6", backgroundColor: "#fff" }}
+          >
+            <div className="flex items-baseline justify-between gap-3">
+              <span style={{ fontSize: 15, fontWeight: 600, color: "#111827" }}>
+                {r.month.label}
+              </span>
+              {isShort ? (
+                <span style={{ fontSize: 13, color: "#374151" }}>{r.obligation}</span>
+              ) : null}
+            </div>
+
+            <div className="mt-1" style={{ fontSize: 13, color: "#6b7280" }}>
+              {isShort ? `Due ${r.due}` : r.due}
+            </div>
+
+            <div className="mt-3">
+              <StatusPill status={r.done ? "valid" : "missing"} size="sm">
+                {r.statusLabel}
+              </StatusPill>
+            </div>
+
+            {/* Full-width on purpose. A phone thumb should not have to aim. */}
+            <button
+              type="button"
+              onClick={r.onOpen}
+              aria-label={`${r.done ? "Edit" : "Record"} ${r.obligation} for ${r.month.label}`}
+              className="mt-4 flex w-full items-center justify-center rounded-lg border text-[14px] font-semibold text-[#374151]"
+              style={{ minHeight: 44, borderColor: "#e5e7eb", backgroundColor: "#fff" }}
+            >
+              {r.done ? "Edit" : isShort ? "Record" : "Confirm"}
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {/* DESKTOP: the table is the right shape once there is room for it. */}
+      <div className="hidden sm:block">
+        <table className="w-full" style={{ borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ fontSize: 11, letterSpacing: "0.06em", color: "#9ca3af", textAlign: "left" }}>
               <th scope="col" className="py-2 font-bold">MONTH</th>
@@ -527,7 +574,7 @@ function PaymentsTab({
                     type="button"
                     onClick={r.onOpen}
                     aria-label={`${r.done ? "Edit" : "Record"} ${r.obligation} for ${r.month.label}`}
-                    className="rounded-lg border px-3 text-[12px] font-semibold text-[#374151]"
+                    className="tap-44 rounded-lg border px-3 text-[12px] font-semibold text-[#374151]"
                     style={{ height: 30, borderColor: "#e5e7eb", backgroundColor: "#fff" }}
                   >
                     {r.done ? "Edit" : isShort ? "Record" : "Confirm"}

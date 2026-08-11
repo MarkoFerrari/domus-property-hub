@@ -220,3 +220,42 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Touch targets.
+
+   WHY THIS EXISTS: several controls in Domus were 26 to 36px tall. On a phone
+   that is a coin-flip tap, and the ones that were worst affected are the row
+   actions on the obligations list, which is exactly where a landlord is
+   confirming that money arrived. A mis-tap there either records the wrong month
+   or opens a dialog they did not want, and both erode trust in the record.
+
+   44px, not the 40 originally asked for, because 44 is the figure Apple's HIG
+   and WCAG 2.5.5 both land on, and it costs nothing extra to clear the
+   recognised bar rather than sit just under it.
+
+   Applied via a pseudo-element so the visual size of a control is untouched.
+   A 30px pill still looks like a 30px pill; the tappable area around it is what
+   grows. Setting real min-heights instead would have reflowed half the UI.
+
+   Pointer-coarse only: a mouse does not need the padding and desktop density is
+   deliberate.
+--------------------------------------------------------------------------- */
+
+@media (pointer: coarse) {
+  .tap-44 {
+    position: relative;
+  }
+
+  .tap-44::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    height: 100%;
+  }
+}

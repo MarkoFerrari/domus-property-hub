@@ -418,7 +418,7 @@ export function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="rounded-lg p-1 text-[#6b7280] transition-colors hover:bg-[#f3f4f6]"
+            className="tap-44 rounded-lg p-1 text-[#6b7280] transition-colors hover:bg-[#f3f4f6]"
           >
             <X size={18} />
           </button>

@@ -72,6 +72,7 @@ export default function Notifications() {
                 <button
                   key={f.key}
                   type="button"
+                  className="tap-44"
                   onClick={() => setFilter(f.key)}
                   aria-pressed={active}
                   style={{
@@ -140,7 +141,7 @@ export default function Notifications() {
                     <button
                       type="button"
                       onClick={() => restore(n.id)}
-                      className="inline-flex items-center gap-1.5 rounded-lg border px-3 text-[12px] font-semibold text-[#374151]"
+                      className="tap-44 inline-flex items-center gap-1.5 rounded-lg border px-3 text-[12px] font-semibold text-[#374151]"
                       style={{ height: 30, borderColor: "#e5e7eb", backgroundColor: "#fff" }}
                     >
                       <Undo2 size={13} aria-hidden="true" /> Unsnooze
@@ -191,7 +192,7 @@ function NotificationRow({ item, onDismiss }: { item: NotificationItem; onDismis
       <div className="flex items-center gap-2">
         <Link
           to={item.to}
-          className="rounded-lg px-3 text-[12px] font-semibold text-white"
+          className="tap-44 rounded-lg px-3 text-[12px] font-semibold text-white"
           style={{
             height: 32,
             backgroundColor: "#171717",
@@ -206,7 +207,7 @@ function NotificationRow({ item, onDismiss }: { item: NotificationItem; onDismis
           type="button"
           onClick={onDismiss}
           aria-label={`Snooze: ${item.title}`}
-          className="inline-flex items-center justify-center rounded-lg border transition-colors hover:bg-[#fafafa]"
+          className="tap-44 inline-flex items-center justify-center rounded-lg border transition-colors hover:bg-[#fafafa]"
           style={{ height: 32, width: 32, borderColor: "#e5e7eb", backgroundColor: "#fff", color: "#6b7280" }}
         >
           <BellOff size={14} aria-hidden="true" />

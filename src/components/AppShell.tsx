@@ -314,7 +314,7 @@ function AvatarMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Account menu"
-        className="flex h-9 w-9 items-center justify-center rounded-full"
+        className="tap-44 flex h-9 w-9 items-center justify-center rounded-full"
         style={{ backgroundColor: "#e5e7eb", color: "#374151", fontWeight: 700, fontSize: 13 }}
       >
         {initialsOf(user?.fullName ?? "", user?.email ?? "")}
@@ -394,7 +394,7 @@ function LoadFailureBanner() {
           type="button"
           onClick={() => void refresh()}
           disabled={loading}
-          className="shrink-0 rounded-lg px-3 text-[12px] font-semibold text-white disabled:opacity-50"
+          className="tap-44 shrink-0 rounded-lg px-3 text-[12px] font-semibold text-white disabled:opacity-50"
           style={{ height: 32, backgroundColor: "#B91C1C" }}
         >
           {loading ? "Retrying…" : "Try again"}

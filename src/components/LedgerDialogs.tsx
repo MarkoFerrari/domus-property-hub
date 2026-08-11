@@ -157,7 +157,7 @@ export function RecordDeclarationDialog({
             type="button"
             onClick={() => setConfirmOpen(true)}
             disabled={busy}
-            className="inline-flex items-center gap-2 self-start text-[13px] font-semibold text-[#b91c1c] transition-colors hover:text-[#991b1b] disabled:opacity-40"
+            className="tap-44 inline-flex items-center gap-2 self-start text-[13px] font-semibold text-[#b91c1c] transition-colors hover:text-[#991b1b] disabled:opacity-40"
           >
             <Trash2 size={15} aria-hidden="true" />
             Clear this record
@@ -312,7 +312,7 @@ export function RecordRentDialog({
             type="button"
             onClick={() => setConfirmOpen(true)}
             disabled={busy}
-            className="inline-flex items-center gap-2 self-start text-[13px] font-semibold text-[#b91c1c] transition-colors hover:text-[#991b1b] disabled:opacity-40"
+            className="tap-44 inline-flex items-center gap-2 self-start text-[13px] font-semibold text-[#b91c1c] transition-colors hover:text-[#991b1b] disabled:opacity-40"
           >
             <Trash2 size={15} aria-hidden="true" />
             Clear this record

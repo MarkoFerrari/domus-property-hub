@@ -112,7 +112,7 @@ export default function SignUp() {
               type="button"
               onClick={() => setShowPw((s) => !s)}
               aria-label={showPw ? "Hide password" : "Show password"}
-              className="p-1"
+              className="tap-44 p-1"
             >
               {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -134,7 +134,7 @@ export default function SignUp() {
                 type="button"
                 onClick={() => setShowRepeat((s) => !s)}
                 aria-label={showRepeat ? "Hide password" : "Show password"}
-                className="p-1"
+                className="tap-44 p-1"
               >
                 {showRepeat ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>

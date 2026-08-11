@@ -101,7 +101,7 @@ export function ImageUpload({
             type="button"
             onClick={open}
             disabled={busy}
-            className="inline-flex h-10 items-center gap-2 rounded-lg border-[1.5px] border-[#E8E8E8] px-4 text-[13px] font-semibold text-[#0D0D0D] transition-colors hover:bg-[#F9F9F9] disabled:opacity-40"
+            className="tap-44 inline-flex h-10 items-center gap-2 rounded-lg border-[1.5px] border-[#E8E8E8] px-4 text-[13px] font-semibold text-[#0D0D0D] transition-colors hover:bg-[#F9F9F9] disabled:opacity-40"
           >
             <ImagePlus size={15} aria-hidden="true" />
             {busy ? "Working…" : "Replace photo"}
@@ -110,7 +110,7 @@ export function ImageUpload({
             type="button"
             onClick={() => setConfirmRemove(true)}
             disabled={busy}
-            className="inline-flex h-10 items-center gap-2 rounded-lg px-3 text-[13px] font-semibold text-[#b91c1c] transition-colors hover:bg-[#FEF2F2] disabled:opacity-40"
+            className="tap-44 inline-flex h-10 items-center gap-2 rounded-lg px-3 text-[13px] font-semibold text-[#b91c1c] transition-colors hover:bg-[#FEF2F2] disabled:opacity-40"
           >
             <Trash2 size={15} aria-hidden="true" />
             Remove

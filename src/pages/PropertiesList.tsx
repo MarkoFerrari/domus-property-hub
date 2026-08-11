@@ -13,7 +13,7 @@ export default function PropertiesList() {
   const topRight = (
     <Link
       to="/properties/new"
-      className="inline-flex items-center gap-1.5"
+      className="tap-44 inline-flex items-center gap-1.5"
       style={{
         height: 36,
         padding: "0 14px",
@@ -51,7 +51,7 @@ export default function PropertiesList() {
               action={
                 <Link
                   to="/properties/new"
-                  className="inline-flex items-center gap-1.5"
+                  className="tap-44 inline-flex items-center gap-1.5"
                   style={{
                     height: 44,
                     padding: "0 20px",

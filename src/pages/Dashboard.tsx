@@ -26,7 +26,7 @@ export default function Dashboard() {
   const topRight = hasData ? (
     <Link
       to="/properties/new"
-      className="inline-flex items-center gap-1.5"
+      className="tap-44 inline-flex items-center gap-1.5"
       style={{
         height: 36,
         padding: "0 14px",
@@ -153,6 +153,7 @@ function EarningsCard() {
             <button
               key={r}
               type="button"
+              className="tap-44"
               onClick={() => setRange(r)}
               aria-pressed={range === r}
               style={{
@@ -367,6 +368,7 @@ function ActionQueueCard() {
               <SeverityPill severity={it.priority} />
               <Link
                 to={it.to}
+                className="tap-44"
                 style={{
                   height: 30,
                   padding: "0 12px",
