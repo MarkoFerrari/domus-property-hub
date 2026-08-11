@@ -364,17 +364,23 @@ export default function PropertyDetail() {
         <RecordDeclarationDialog
           open={monthOpen !== null}
           month={monthOpen?.month ?? null}
-          type={monthOpen?.type ?? "stay"}
           propertyName={property.name}
           existing={
             monthOpen
-              ? declarations[obligationKey(property.id, monthOpen.month, monthOpen.type)]
-              : undefined
+              ? {
+                  stay: declarations[obligationKey(property.id, monthOpen.month, "stay")],
+                  takk: declarations[obligationKey(property.id, monthOpen.month, "takk")],
+                }
+              : {}
           }
-          onSave={(rec) =>
-            recordDeclaration(property.id, monthOpen!.month.key, monthOpen!.type, rec)
+          /* A ΤΑΚΚ reminder deep-links with ?obligation=takk. The dialog now
+             holds both, so the parameter no longer picks the dialog; it picks
+             which field the cursor lands in. */
+          focusType={monthOpen?.type}
+          onSave={(type, rec) =>
+            recordDeclaration(property.id, monthOpen!.month.key, type, rec)
           }
-          onDelete={() => removeDeclaration(property.id, monthOpen!.month.key, monthOpen!.type)}
+          onDelete={(type) => removeDeclaration(property.id, monthOpen!.month.key, type)}
           onClose={closeMonth}
         />
       ) : (
@@ -430,44 +436,63 @@ function PaymentsTab({
   type Row = {
     key: string;
     month: MonthRef;
-    /** Only the first row of a month prints its name, so the pairing reads. */
-    showMonth: boolean;
     obligation: string;
     due: string;
+    /** Fully done. For short-term that means BOTH obligations, never one. */
     done: boolean;
+    /** True when one of the two is recorded and the other is not. */
+    partial: boolean;
     statusLabel: string;
     onOpen: () => void;
   };
 
+  /* ONE ROW PER MONTH, including short-term where a month carries two
+     obligations. They used to be two rows opening two dialogs; both are now
+     handled in a single dialog, so two rows would offer two routes to the same
+     place and split a month's status across two lines that had to be read
+     together to mean anything. */
   const rows: Row[] = isShort
-    ? months.flatMap((m) =>
-        OBLIGATION_TYPES.map((type, i) => {
-          const rec = declarations[obligationKey(propertyId, m, type)];
-          return {
-            key: `${m.key}:${type}`,
-            month: m,
-            showMonth: i === 0,
-            obligation: OBLIGATION_LABEL[type],
-            due: deadlineLabel(m, type),
-            done: Boolean(rec),
-            statusLabel: rec
-              ? rec.zero
-                ? "Recorded · nothing to declare"
-                : `Recorded · ${formatEuro(parseAmount(rec.amount))}`
-              : "Not recorded",
-            onOpen: () => onOpenMonth({ month: m, type }),
-          };
-        }),
-      )
+    ? months.map((m) => {
+        const recs = OBLIGATION_TYPES.map((t) => declarations[obligationKey(propertyId, m, t)]);
+        const doneCount = recs.filter(Boolean).length;
+
+        const total = recs.reduce(
+          (sum, r) => sum + (r && !r.zero ? parseAmount(r.amount) : 0),
+          0,
+        );
+        const allZero = doneCount === OBLIGATION_TYPES.length && recs.every((r) => r?.zero);
+
+        return {
+          key: m.key,
+          month: m,
+          obligation: OBLIGATION_TYPES.map((t) => OBLIGATION_LABEL[t]).join(" + "),
+          // Both deadlines, because they are genuinely different dates and the
+          // earlier one is the one that bites first.
+          due: OBLIGATION_TYPES.map((t) => deadlineLabel(m, t)).join(" · "),
+          done: doneCount === OBLIGATION_TYPES.length,
+          partial: doneCount > 0 && doneCount < OBLIGATION_TYPES.length,
+          statusLabel:
+            doneCount === 0
+              ? "Neither recorded"
+              : doneCount < OBLIGATION_TYPES.length
+                ? // Name the outstanding one. "1 of 2" makes the landlord open
+                  // the dialog just to find out which half is missing.
+                  `${OBLIGATION_LABEL[OBLIGATION_TYPES[recs.findIndex((r) => !r)]]} outstanding`
+                : allZero
+                  ? "Both recorded · nothing to declare"
+                  : `Both recorded · ${formatEuro(total)}`,
+          onOpen: () => onOpenMonth({ month: m, type: "stay" }),
+        };
+      })
     : months.map((m) => {
         const rent = rents[rentKey(propertyId, m)];
         return {
           key: m.key,
           month: m,
-          showMonth: true,
           obligation: "Rent",
           due: rent ? formatEuro(parseAmount(rent.amount)) : "—",
           done: Boolean(rent),
+          partial: false,
           statusLabel: rent ? "Confirmed" : "Not confirmed",
           onOpen: () => onOpenMonth({ month: m, type: "stay" }),
         };
@@ -516,7 +541,7 @@ function PaymentsTab({
             </div>
 
             <div className="mt-3">
-              <StatusPill status={r.done ? "valid" : "missing"} size="sm">
+              <StatusPill status={r.done ? "valid" : r.partial ? "renew" : "missing"} size="sm">
                 {r.statusLabel}
               </StatusPill>
             </div>
@@ -541,31 +566,25 @@ function PaymentsTab({
           <thead>
             <tr style={{ fontSize: 11, letterSpacing: "0.06em", color: "#9ca3af", textAlign: "left" }}>
               <th scope="col" className="py-2 font-bold">MONTH</th>
-              {isShort ? <th scope="col" className="py-2 font-bold">OBLIGATION</th> : null}
-              <th scope="col" className="py-2 font-bold">{isShort ? "DUE" : "AMOUNT"}</th>
+              <th scope="col" className="py-2 font-bold">{isShort ? "DEADLINES" : "AMOUNT"}</th>
               <th scope="col" className="py-2 font-bold">STATUS</th>
               <th scope="col" className="py-2 font-bold text-right">ACTION</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr
-                key={r.key}
-                style={{ borderTop: r.showMonth ? "1px solid #f3f4f6" : "1px solid #fafafa" }}
-              >
+              <tr key={r.key} style={{ borderTop: "1px solid #f3f4f6" }}>
                 <td className="py-3" style={{ fontSize: 14, fontWeight: 600, color: "#111827" }}>
-                  {r.showMonth ? r.month.label : ""}
+                  {r.month.label}
                 </td>
-                {isShort ? (
-                  <td className="py-3" style={{ fontSize: 13, color: "#374151" }}>
-                    {r.obligation}
-                  </td>
-                ) : null}
                 <td className="py-3" style={{ fontSize: 13, color: "#6b7280" }}>
                   {r.due}
                 </td>
                 <td className="py-3">
-                  <StatusPill status={r.done ? "valid" : "missing"} size="sm">
+                  <StatusPill
+                    status={r.done ? "valid" : r.partial ? "renew" : "missing"}
+                    size="sm"
+                  >
                     {r.statusLabel}
                   </StatusPill>
                 </td>
