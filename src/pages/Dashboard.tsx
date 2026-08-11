@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertCircle, CheckCircle2, Euro, Plus } from "lucide-react";
+import { CheckCircle2, Euro, Plus } from "lucide-react";
 
+import { ActionRow } from "../components/ActionRow";
 import { AppShell } from "../components/AppShell";
-import { Card, EmptyBlock, Eyebrow, SeverityPill, Skeleton, TypeTag } from "../components/patterns";
+import { Card, EmptyBlock, Eyebrow, Skeleton, TypeTag } from "../components/patterns";
 import { useStore } from "../lib/store";
 import { formatEuro, parseAmount, type Property } from "../lib/compliance";
 import { completedMonths, declarationKey, rentKey } from "../lib/ledger";
@@ -341,75 +342,17 @@ function ActionQueueCard() {
       </div>
 
       {visible.length > 0 ? (
-        <div className="mt-4 flex flex-col divide-y" style={{ borderColor: "#f3f4f6" }}>
-          {/* Stacks on mobile, single row from sm up. The row packed an icon,
-              two lines of text, a pill and a button onto a phone width, which
-              truncated the title to nothing useful and squeezed the button to
-              30px. Same elements, given room. */}
+        <ul className="mt-4 flex flex-col divide-y" style={{ borderColor: "#f3f4f6" }}>
+          {/* Same component as the notifications list. These are the same items
+              from the same feed, so rendering them two different ways made a
+              landlord re-learn the layout every time they moved between the two
+              screens. No snooze here: the dashboard is a summary, and hiding
+              things from a summary you did not open on purpose is a good way to
+              forget them. */}
           {visible.map((it) => (
-            <div
-              key={it.id}
-              className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:gap-3"
-            >
-              <div className="flex min-w-0 items-start gap-3 sm:flex-1 sm:items-center">
-                <div
-                  className="flex shrink-0 items-center justify-center rounded-lg"
-                  style={{
-                    width: 32,
-                    height: 32,
-                    backgroundColor:
-                      it.source === "rent"
-                        ? "#171717"
-                        : it.priority === "medium"
-                          ? "#b45309"
-                          : "#7f1d1d",
-                    color: "#fff",
-                  }}
-                  aria-hidden="true"
-                >
-                  {it.source === "rent" ? <Euro size={16} /> : <AlertCircle size={16} />}
-                </div>
-                <div className="min-w-0 flex-1">
-                  {/* Full title on mobile. A deadline truncated mid-word is
-                      worse than no deadline: it looks handled. */}
-                  <div
-                    className="sm:truncate"
-                    style={{ fontWeight: 600, fontSize: 13, color: "#111827", lineHeight: 1.4 }}
-                  >
-                    {it.title}
-                  </div>
-                  <div
-                    className="sm:truncate"
-                    style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.45 }}
-                  >
-                    {it.subtitle}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex shrink-0 items-center gap-3">
-                <SeverityPill severity={it.priority} />
-              </div>
-
-              <Link
-                to={it.to}
-                className="flex w-full shrink-0 items-center justify-center rounded-lg sm:w-auto"
-                style={{
-                  minHeight: 44,
-                  padding: "0 16px",
-                  border: "1px solid #e5e7eb",
-                  backgroundColor: "#fff",
-                  color: "#374151",
-                  fontWeight: 600,
-                  fontSize: 13,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {it.actionLabel}
-              </Link>
-            </div>
+            <ActionRow key={it.id} item={it} />
           ))}
-        </div>
+        </ul>
       ) : (
         <EmptyBlock
           icon={<CheckCircle2 size={28} color="#22c55e" aria-hidden="true" />}
