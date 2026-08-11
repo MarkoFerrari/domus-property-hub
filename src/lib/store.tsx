@@ -17,6 +17,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -100,10 +101,28 @@ type StoreValue = {
 const StoreContext = createContext<StoreValue | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const userId = user?.id ?? null;
 
-  const [loading, setLoading] = useState(true);
+  /**
+   * WHICH USER the state in this provider actually belongs to.
+   *
+   * WHY THIS EXISTS: `loading` used to be a plain boolean that refresh() set to
+   * false when it finished. That created a one-render window on every sign-in
+   * where the store still held the signed-out state (onboarded: false) but
+   * already reported loading: false, because auth resolves a render before the
+   * store's effect gets to run. RequireOnboarded read that gap and redirected
+   * to /welcome, so returning landlords were asked to set up their portfolio
+   * every single time they logged in.
+   *
+   * Deriving `loading` from "is the loaded data for the current user?" closes
+   * the gap: the moment userId changes, loading is true again in the very same
+   * render, before any gate can act on stale values.
+   *
+   * `undefined` means nothing has been loaded yet. `null` means the signed-out
+   * state is loaded, which is a real, settled state.
+   */
+  const [loadedFor, setLoadedFor] = useState<string | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [properties, setProperties] = useState<Property[]>([]);
   const [declarations, setDeclarations] = useState<Record<string, DeclRecord>>({});
@@ -112,7 +131,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [onboarded, setOnboardedState] = useState(false);
 
+  /**
+   * The store is loading whenever auth has not settled, or whenever the data we
+   * are holding belongs to a different user than the one currently signed in.
+   * Derived, never assigned, so it can never fall out of step with userId.
+   */
+  const loading = authLoading || loadedFor !== userId;
+
+  /**
+   * Sign in as A, sign out, sign in as B fast enough and A's in-flight request
+   * can resolve after B's. This ticket makes stale responses no-ops instead of
+   * letting one landlord's portfolio land in another's session.
+   */
+  const requestRef = useRef(0);
+
   const refresh = useCallback(async () => {
+    const ticket = ++requestRef.current;
+
     if (!userId) {
       setProperties([]);
       setDeclarations({});
@@ -120,9 +155,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setDeadlineOverrides({});
       setDismissed(new Set());
       setOnboardedState(false);
-      setLoading(false);
+      setError(null);
+      setLoadedFor(null);
       return;
     }
+
     try {
       setError(null);
       const [p, d, r, ov, dis, onb] = await Promise.all([
@@ -133,21 +170,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         db.loadDismissed(userId),
         db.getOnboarded(userId),
       ]);
+      if (ticket !== requestRef.current) return;
       setProperties(p);
       setDeclarations(d);
       setRents(r);
       setDeadlineOverrides(ov);
       setDismissed(dis);
       setOnboardedState(onb);
+      setLoadedFor(userId);
     } catch (e) {
+      if (ticket !== requestRef.current) return;
       setError(e instanceof Error ? e.message : "Could not load your portfolio.");
-    } finally {
-      setLoading(false);
+      // Mark as settled even on failure. Leaving it unsettled would park the
+      // landlord on the splash screen forever with no way to retry; AppShell
+      // shows the error banner and a retry instead.
+      setLoadedFor(userId);
     }
   }, [userId]);
 
   useEffect(() => {
-    setLoading(true);
     void refresh();
   }, [refresh]);
 

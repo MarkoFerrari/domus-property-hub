@@ -43,11 +43,18 @@ function RequireAuth({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-/** First run after sign-up sends the landlord through onboarding. */
+/**
+ * First run after sign-up sends the landlord through onboarding.
+ *
+ * The `error` check matters: if the portfolio failed to load we do not know
+ * whether they have onboarded, and guessing "no" would drag an established
+ * landlord back through setup over a dropped connection. Letting them through
+ * shows AppShell's error banner with a retry, which is the honest outcome.
+ */
 function RequireOnboarded({ children }: { children: ReactNode }) {
-  const { loading, onboarded } = useStore();
+  const { loading, onboarded, error } = useStore();
   if (loading) return <Splash />;
-  if (!onboarded) return <Navigate to="/welcome" replace />;
+  if (!onboarded && !error) return <Navigate to="/welcome" replace />;
   return <>{children}</>;
 }
 

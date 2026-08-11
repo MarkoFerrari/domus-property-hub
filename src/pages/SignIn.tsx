@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 import { AuthShell } from "../components/AuthShell";
-import { Btn, ErrorBanner, GoogleGlyph, LabelledInput } from "../components/ui-primitives";
+import { GoogleAuthButton } from "../components/GoogleAuthButton";
+import { Btn, ErrorBanner, LabelledInput } from "../components/ui-primitives";
 import { useAuth } from "../lib/auth";
 
 /** Sign in — source of truth §4.1, Page 3. */
@@ -127,10 +128,7 @@ export default function SignIn() {
           <Btn type="submit" loading={loading}>
             Sign in
           </Btn>
-          <Btn type="button" variant="secondary" onClick={google} disabled={loading}>
-            <GoogleGlyph />
-            Continue with Google
-          </Btn>
+          <GoogleAuthButton onClick={google} busy={loading} />
         </div>
       </form>
     </AuthShell>
