@@ -16,7 +16,18 @@ import {
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { CertificateDialog } from "../components/CertificateDialog";
 import { RecordDeclarationDialog, RecordRentDialog } from "../components/LedgerDialogs";
+import { CalendarTab } from "../components/CalendarTab";
 import { useProperty, useStore } from "../lib/store";
+import {
+  connect as connectCalendar,
+  disconnect as disconnectCalendar,
+  getConnection,
+  simulatedMonth,
+  type Channel,
+  type Connection,
+} from "../lib/calendarPreview";
+import { CALENDAR_TAB_ENABLED } from "../lib/features";
+import { isDemo } from "../lib/demoMode";
 import {
   CERTIFICATES,
   CERT_STATUS_LABEL,
@@ -42,7 +53,42 @@ import {
 import { getPropertyStatus } from "../lib/notifications";
 import { DEADLINE_CAVEAT_LONG } from "../lib/legal";
 
-type Tab = "overview" | "payments";
+/** "calendar" is conditional. See calendarAvailable() and tabsFor() below. */
+type Tab = "overview" | "payments" | "calendar";
+
+/**
+ * Whether this property gets a Calendar tab at all.
+ *
+ * Three conditions, and the third is the interesting one:
+ *
+ *   1. The feature is on.
+ *   2. The property is short-term. A long-term let has no booking calendar.
+ *   3. **We are in demo mode.**
+ *
+ * WHY DEMO ONLY: the nights are invented (see `src/lib/calendarPreview.ts`).
+ * Showing a demo visitor sample data is exactly what a demo is for. Showing it
+ * to a landlord with a real portfolio, on a product whose whole promise is
+ * keeping their records straight, is a different thing entirely, however many
+ * amber warnings sit next to it. So the preview reaches prospects and pitches
+ * and never reaches someone who might act on it.
+ *
+ * Flip this to unconditional when the connection is real, not before. That is
+ * the same moment `CALENDAR_IS_SIMULATED` goes false.
+ */
+function calendarAvailable(isShort: boolean): boolean {
+  return CALENDAR_TAB_ENABLED && isShort && isDemo();
+}
+
+/**
+ * Deriving the tab list in one place stops the tab strip and the `?tab=` parser
+ * drifting apart, which is how you end up with a deep link to a tab that cannot
+ * be reached by clicking.
+ */
+function tabsFor(withCalendar: boolean): readonly Tab[] {
+  return withCalendar
+    ? (["overview", "payments", "calendar"] as const)
+    : (["overview", "payments"] as const);
+}
 
 /** Which month, and for short-term, which of its two obligations. */
 type MonthTarget = { month: MonthRef; type: ObligationType };
@@ -66,7 +112,7 @@ export default function PropertyDetail() {
   } = useStore();
   const property = useProperty(id);
 
-  const tab: Tab = params.get("tab") === "payments" ? "payments" : "overview";
+  const tabParam = params.get("tab");
   const certParam = params.get("cert");
   const monthParam = params.get("month");
   const obligationParam = params.get("obligation");
@@ -74,6 +120,13 @@ export default function PropertyDetail() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [certOpen, setCertOpen] = useState<string | null>(null);
   const [monthOpen, setMonthOpen] = useState<MonthTarget | null>(null);
+
+  /* The calendar "connection" lives in localStorage, not the store, because it
+     is a preview and not portfolio data. See src/lib/calendarPreview.ts. Held
+     here rather than inside the tab so the record dialog can read the same
+     value: one source, so the nights on the calendar and the nights in the
+     dialog cannot disagree. */
+  const [connection, setConnection] = useState<Connection | null>(() => getConnection(id));
 
   /* deep links from notifications: ?cert=… and ?month=… */
   useEffect(() => {
@@ -107,6 +160,17 @@ export default function PropertyDetail() {
   }
 
   if (!property) return <Navigate to="/properties" replace />;
+
+  const isShort = property.type === "short";
+  /* Read at render, not memoised: isDemo() changes while the app is running and
+     both transitions do a full page load, so there is no stale value to hold. */
+  const withCalendar = calendarAvailable(isShort);
+  const tabs = tabsFor(withCalendar);
+
+  /* An unknown or unavailable ?tab= falls back to Overview rather than showing
+     an empty page. A long-term property reached by a ?tab=calendar link lands on
+     Overview, which is the only honest destination: it has no calendar. */
+  const tab: Tab = tabs.includes(tabParam as Tab) ? (tabParam as Tab) : "overview";
 
   /* DERIVED on every render — never read from a stored field. */
   const compliance = getCompliance(property);
@@ -240,7 +304,7 @@ export default function PropertyDetail() {
 
         {/* Tabs */}
         <div className="mt-6 flex gap-1 border-b" style={{ borderColor: "#e5e7eb" }}>
-          {(["overview", "payments"] as const).map((t) => (
+          {tabs.map((t) => (
             <button
               key={t}
               type="button"
@@ -256,7 +320,13 @@ export default function PropertyDetail() {
                 cursor: "pointer",
               }}
             >
-              {t === "overview" ? "Overview" : property.type === "short" ? "Declarations" : "Rent"}
+              {t === "overview"
+                ? "Overview"
+                : t === "calendar"
+                  ? "Calendar"
+                  : isShort
+                    ? "Declarations"
+                    : "Rent"}
             </button>
           ))}
         </div>
@@ -346,11 +416,21 @@ export default function PropertyDetail() {
               </ul>
             </SectionCard>
           </div>
+        ) : tab === "calendar" ? (
+          <CalendarTab
+            propertyId={property.id}
+            connection={connection}
+            onConnect={(channel: Channel) => setConnection(connectCalendar(property.id, channel))}
+            onDisconnect={() => {
+              disconnectCalendar(property.id);
+              setConnection(null);
+            }}
+          />
         ) : (
           <PaymentsTab
             months={months}
             propertyId={property.id}
-            isShort={property.type === "short"}
+            isShort={isShort}
             onOpenMonth={setMonthOpen}
           />
         )}
@@ -367,11 +447,26 @@ export default function PropertyDetail() {
         onClose={closeCert}
       />
 
-      {property.type === "short" ? (
+      {isShort ? (
         <RecordDeclarationDialog
           open={monthOpen !== null}
           month={monthOpen?.month ?? null}
           propertyName={property.name}
+          /* Same generator, same three inputs, so this is necessarily the same
+             figure the Calendar tab shows for this month. If these two ever
+             disagree the landlord stops trusting every number in Domus,
+             including the real ones. */
+          calendarNights={
+            withCalendar && connection && monthOpen
+              ? simulatedMonth(
+                  property.id,
+                  connection.channel,
+                  monthOpen.month.year,
+                  monthOpen.month.monthIdx,
+                ).nights
+              : undefined
+          }
+          calendarChannel={withCalendar ? connection?.channel : undefined}
           existing={
             monthOpen
               ? {

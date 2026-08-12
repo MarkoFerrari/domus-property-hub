@@ -15,7 +15,9 @@ import {
   type ObligationType,
   type RentRecord,
 } from "../lib/ledger";
-import { DEADLINE_CAVEAT } from "../lib/legal";
+import { CHANNEL_LABEL, type Channel } from "../lib/calendarPreview";
+import { CALENDAR_IS_SIMULATED } from "../lib/features";
+import { CALENDAR_PREFILL_NOTE, DEADLINE_CAVEAT } from "../lib/legal";
 
 /* ========================================================================== */
 /* Obligations — short-term. A month carries two: the stay declaration and ΤΑΚΚ */
@@ -52,6 +54,8 @@ export function RecordDeclarationDialog({
   propertyName,
   existing,
   focusType,
+  calendarNights,
+  calendarChannel,
   onSave,
   onDelete,
   onClose,
@@ -63,6 +67,17 @@ export function RecordDeclarationDialog({
   existing: Partial<Record<ObligationType, DeclRecord>>;
   /** Which obligation to put the cursor in, when arriving from a notification. */
   focusType?: ObligationType;
+  /**
+   * Booked nights for this month from a connected calendar, if there is one.
+   *
+   * Context, never a value that gets saved. It is here because both obligations
+   * are counted per night, so the number is genuinely useful sitting next to the
+   * fields. It is deliberately NOT written into either amount: a calendar
+   * connection carries nights and never money, so the euro figure is always one
+   * the landlord typed.
+   */
+  calendarNights?: number;
+  calendarChannel?: Channel;
   onSave: (type: ObligationType, rec: DeclRecord) => Promise<void>;
   onDelete: (type: ObligationType) => Promise<void>;
   onClose: () => void;
@@ -190,6 +205,28 @@ export function RecordDeclarationDialog({
         }
       >
         <div className="flex flex-col gap-6">
+          {/* Nights from the connected calendar. Above the fields, because it is
+              the thing they would otherwise be counting by hand before typing,
+              and because a note underneath arrives after the decision. */}
+          {calendarNights !== undefined && calendarChannel ? (
+            <div
+              className="rounded-lg px-4 py-3"
+              style={{ backgroundColor: "#FFF1EA", border: "1px solid #FFD5C6" }}
+            >
+              <p style={{ fontSize: 13, color: "#9A3412", lineHeight: 1.55 }}>
+                <strong style={{ fontWeight: 700 }}>
+                  {calendarNights} booked {calendarNights === 1 ? "night" : "nights"}
+                </strong>{" "}
+                in {month.label}, from your {CHANNEL_LABEL[calendarChannel]} calendar.
+              </p>
+              {CALENDAR_IS_SIMULATED ? (
+                <p className="mt-1" style={{ fontSize: 12, color: "#B45309", lineHeight: 1.5 }}>
+                  {CALENDAR_PREFILL_NOTE}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           {OBLIGATION_TYPES.map((type, i) => (
             <ObligationSection
               key={type}
