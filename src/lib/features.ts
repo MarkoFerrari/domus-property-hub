@@ -16,7 +16,7 @@
  *
  * Before flipping this to true:
  *   1. Create a Web application OAuth client in Google Cloud Console
- *   2. Authorised JavaScript origin: https://ferrarim1987.github.io
+ *   2. Authorised JavaScript origin: https://markoferrari.github.io
  *   3. Authorised redirect URI: the callback URL shown on Supabase's Google
  *      provider page
  *   4. Paste the Client ID and Secret into Supabase, Authentication ->
