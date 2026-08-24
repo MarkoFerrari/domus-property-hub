@@ -26,8 +26,7 @@ import {
   type Channel,
   type Connection,
 } from "../lib/calendarPreview";
-import { CALENDAR_TAB_ENABLED } from "../lib/features";
-import { isDemo } from "../lib/demoMode";
+import { calendarAvailable } from "../lib/features";
 import {
   CERTIFICATES,
   CERT_STATUS_LABEL,
@@ -53,31 +52,8 @@ import {
 import { getPropertyStatus } from "../lib/notifications";
 import { DEADLINE_CAVEAT_LONG } from "../lib/legal";
 
-/** "calendar" is conditional. See calendarAvailable() and tabsFor() below. */
+/** "calendar" is conditional. See calendarAvailable() in features.ts and tabsFor() below. */
 type Tab = "overview" | "payments" | "calendar";
-
-/**
- * Whether this property gets a Calendar tab at all.
- *
- * Three conditions, and the third is the interesting one:
- *
- *   1. The feature is on.
- *   2. The property is short-term. A long-term let has no booking calendar.
- *   3. **We are in demo mode.**
- *
- * WHY DEMO ONLY: the nights are invented (see `src/lib/calendarPreview.ts`).
- * Showing a demo visitor sample data is exactly what a demo is for. Showing it
- * to a landlord with a real portfolio, on a product whose whole promise is
- * keeping their records straight, is a different thing entirely, however many
- * amber warnings sit next to it. So the preview reaches prospects and pitches
- * and never reaches someone who might act on it.
- *
- * Flip this to unconditional when the connection is real, not before. That is
- * the same moment `CALENDAR_IS_SIMULATED` goes false.
- */
-function calendarAvailable(isShort: boolean): boolean {
-  return CALENDAR_TAB_ENABLED && isShort && isDemo();
-}
 
 /**
  * Deriving the tab list in one place stops the tab strip and the `?tab=` parser
@@ -162,8 +138,9 @@ export default function PropertyDetail() {
   if (!property) return <Navigate to="/properties" replace />;
 
   const isShort = property.type === "short";
-  /* Read at render, not memoised: isDemo() changes while the app is running and
-     both transitions do a full page load, so there is no stale value to hold. */
+  /* Read at render, not memoised: the demo flag inside calendarAvailable() can
+     change while the app is running, and both transitions do a full page load,
+     so there is no stale value to hold. */
   const withCalendar = calendarAvailable(isShort);
   const tabs = tabsFor(withCalendar);
 
@@ -310,6 +287,8 @@ export default function PropertyDetail() {
               type="button"
               onClick={() => setTab(t)}
               aria-current={tab === t ? "page" : undefined}
+              /* Anchor for the product tour. See src/lib/tour.tsx. */
+              data-tour={`tab-${t}`}
               style={{
                 padding: "10px 16px",
                 fontSize: 14,
@@ -623,7 +602,7 @@ function PaymentsTab({
           button was invisible until you scrolled. Same data, same handlers,
           stacked vertically instead. */}
       <ul className="flex flex-col gap-3 sm:hidden">
-        {rows.map((r) => (
+        {rows.map((r, i) => (
           <li
             key={r.key}
             className="rounded-xl border p-4"
@@ -653,6 +632,10 @@ function PaymentsTab({
               type="button"
               onClick={r.onOpen}
               aria-label={`${r.done ? "Edit" : "Record"} ${r.obligation} for ${r.month.label}`}
+              /* Tour anchor on the newest month only, which is the one still
+                 outstanding. The desktop table below carries the same attribute;
+                 only one of the two is visible at any width. */
+              data-tour={i === 0 ? "record-button" : undefined}
               className="mt-4 flex w-full items-center justify-center rounded-lg border text-[14px] font-semibold text-[#374151]"
               style={{ minHeight: 44, borderColor: "#e5e7eb", backgroundColor: "#fff" }}
             >
@@ -674,7 +657,7 @@ function PaymentsTab({
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
+            {rows.map((r, i) => (
               <tr key={r.key} style={{ borderTop: "1px solid #f3f4f6" }}>
                 <td className="py-3" style={{ fontSize: 14, fontWeight: 600, color: "#111827" }}>
                   {r.month.label}
@@ -695,6 +678,7 @@ function PaymentsTab({
                     type="button"
                     onClick={r.onOpen}
                     aria-label={`${r.done ? "Edit" : "Record"} ${r.obligation} for ${r.month.label}`}
+                    data-tour={i === 0 ? "record-button" : undefined}
                     className="tap-44 rounded-lg border px-3 text-[12px] font-semibold text-[#374151]"
                     style={{ height: 30, borderColor: "#e5e7eb", backgroundColor: "#fff" }}
                   >

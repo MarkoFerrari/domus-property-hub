@@ -10,11 +10,25 @@ import type { CertStatus } from "../lib/compliance";
 
 /* --------------------------------- Cards ---------------------------------- */
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className = "",
+  /* The product tour anchors its spotlight to `[data-tour="..."]`. Passing it
+     through here rather than wrapping the card in another div keeps the grid
+     layout byte-identical — a wrapper would break the equal-height stretch that
+     two cards side by side rely on. Remove this prop and the tour degrades to
+     skipping the step; nothing else notices. */
+  tourId,
+}: {
+  children: ReactNode;
+  className?: string;
+  tourId?: string;
+}) {
   return (
     <div
       className={`rounded-2xl border ${className}`}
       style={{ backgroundColor: "#fff", borderColor: "#e5e7eb", padding: 20 }}
+      data-tour={tourId}
     >
       {children}
     </div>

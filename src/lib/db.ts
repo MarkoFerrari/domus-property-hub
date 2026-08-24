@@ -14,7 +14,8 @@
 
 import { isDemo } from "./demoMode";
 import { supabase } from "./supabase";
-import { CERTIFICATES, type CertRecord, type Property } from "./compliance";
+import { CERTIFICATES, parseAmount, type CertRecord, type Property } from "./compliance";
+import { demoLedger } from "./demoLedger";
 import {
   deadlineKey,
   obligationKey,
@@ -880,14 +881,115 @@ export function demoPortfolio(): Array<Omit<Property, "id">> {
   ];
 }
 
-/** Adds the demo portfolio for a user. Returns how many properties were added. */
+/**
+ * Adds the demo portfolio for a user, properties AND their payment history.
+ * Returns how many properties were added.
+ */
 export async function seedDemoPortfolio(userId: string): Promise<number> {
   const existing = await listProperties(userId);
   if (existing.length > 0) return 0;
+
   const demo = demoPortfolio();
-  for (const p of demo) await createProperty(userId, p);
+  /* The ledger is joined to properties by name, so the ids have to be captured
+     as they come back. `demoLedger()` never sees an id. */
+  const idByName = new Map<string, string>();
+  for (const p of demo) {
+    const created = await createProperty(userId, p);
+    idByName.set(created.name, created.id);
+  }
+
+  await seedDemoLedger(userId, idByName);
+
   if (isDemo()) lsWrite(LS.seeded, true);
   return demo.length;
+}
+
+/**
+ * Writes the example portfolio's declarations and rent in bulk.
+ *
+ * WHY THIS IS NOT JUST A LOOP OVER `saveDeclaration`/`saveRent`: those three
+ * things each — a read to find the previous value, the write itself, and a
+ * history append. Around eighty records would be some two hundred and forty
+ * Supabase round trips, and this runs on a button a signed-up landlord can press
+ * ("Explore with an example portfolio" is on the Welcome screen AND in Settings,
+ * not only in demo mode). One upsert per table instead.
+ *
+ * NO HISTORY IS WRITTEN, deliberately. `history.ts` records what a landlord
+ * changed, and nobody changed these — they arrived with the example portfolio.
+ * Inventing an edit log for them would put a fiction into the one store in Domus
+ * that is append-only and meant to be trustworthy. Nothing reads history yet, so
+ * this costs nothing today either.
+ */
+async function seedDemoLedger(userId: string, idByName: Map<string, string>): Promise<void> {
+  const { declarations, rents } = demoLedger();
+
+  if (isDemo()) {
+    /* One read and one write per store, not one per record. localStorage is
+       synchronous and a JSON round trip per record on eighty records is a
+       visible pause on the click that loads the demo. */
+    const declMap = lsRead<Record<string, DeclRecord>>(LS.declarations, {});
+    for (const d of declarations) {
+      const propertyId = idByName.get(d.propertyName);
+      if (propertyId) declMap[obligationKey(propertyId, d.month, d.type)] = d.rec;
+    }
+    lsWrite(LS.declarations, declMap);
+
+    const rentMap = lsRead<Record<string, RentRecord>>(LS.rent, {});
+    for (const r of rents) {
+      const propertyId = idByName.get(r.propertyName);
+      if (propertyId) rentMap[rentKey(propertyId, r.month)] = r.rec;
+    }
+    lsWrite(LS.rent, rentMap);
+    return;
+  }
+
+  const sb = supabase!;
+
+  const declRows = declarations
+    .map((d) => {
+      const propertyId = idByName.get(d.propertyName);
+      if (!propertyId) return null;
+      return {
+        user_id: userId,
+        property_id: propertyId,
+        month: d.month,
+        type: d.type,
+        zero: d.rec.zero,
+        amount: d.rec.zero ? null : parseAmount(d.rec.amount),
+        recorded_at: d.rec.recordedAt,
+      };
+    })
+    .filter((r): r is NonNullable<typeof r> => r !== null);
+
+  if (declRows.length) {
+    const { error } = await sb
+      .from("declarations")
+      .upsert(declRows, { onConflict: "property_id,month,type" });
+    if (error) throw error;
+  }
+
+  const rentRows = rents
+    .map((r) => {
+      const propertyId = idByName.get(r.propertyName);
+      if (!propertyId) return null;
+      return {
+        user_id: userId,
+        property_id: propertyId,
+        month: r.month,
+        amount: parseAmount(r.rec.amount),
+        paid_date: r.rec.date ?? null,
+        note: r.rec.note ?? null,
+        recorded_at: r.rec.recordedAt,
+      };
+    })
+    .filter((r): r is NonNullable<typeof r> => r !== null);
+
+  if (rentRows.length) {
+    const { error } = await sb
+      .from("rent_payments")
+      .upsert(rentRows, { onConflict: "property_id,month" });
+    if (error) throw error;
+  }
 }
 
 /**

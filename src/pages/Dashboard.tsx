@@ -11,7 +11,27 @@ import { completedMonths, declarationKey, rentKey } from "../lib/ledger";
 
 /** Dashboard — source of truth §5.2. */
 
-type Range = "month" | "year";
+/**
+ * The two windows the Earnings card can total.
+ *
+ * This toggle used to read "This month" and filtered `completedMonths()` for
+ * `monthIdx === now.getMonth()`. That month is NEVER in the list —
+ * `completedMonths` deliberately excludes the month in progress, because you
+ * cannot record a month that has not ended. So the toggle could not match
+ * anything and showed the empty state permanently, whatever the data.
+ *
+ * "Last month" would have been the obvious repair, and it is the wrong one. The
+ * most recent completed month is precisely the month whose paperwork is still
+ * outstanding, so for most landlords most of the time that view is empty too —
+ * correct, and useless as a summary. The month-by-month detail already lives in
+ * each property's Declarations or Rent tab, which is where someone goes to ask
+ * about one specific month.
+ *
+ * So the dashboard totals two windows that always hold something once anything
+ * is recorded: a rolling year, and the calendar year to date. They diverge most
+ * in January, when "this year" is nearly empty and the rolling window is not.
+ */
+type Range = "rolling" | "year";
 
 function greeting(now = new Date()) {
   const h = now.getHours();
@@ -100,12 +120,9 @@ function EarningsCard() {
   const [range, setRange] = useState<Range>("year");
   const now = new Date();
 
-  const { total, shortTotal, longTotal, topProps } = useMemo(() => {
-    const months = completedMonths(now).filter((m) =>
-      range === "year"
-        ? m.year === now.getFullYear()
-        : m.year === now.getFullYear() && m.monthIdx === now.getMonth(),
-    );
+  const { total, shortTotal, longTotal, topProps, rangeLabel } = useMemo(() => {
+    const all = completedMonths(now);
+    const months = range === "year" ? all.filter((m) => m.year === now.getFullYear()) : all;
 
     let short = 0;
     let long = 0;
@@ -134,7 +151,17 @@ function EarningsCard() {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 3);
 
-    return { total: short + long, shortTotal: short, longTotal: long, topProps };
+    /* The caption names the window actually counted, not today's month. The
+       first and last entries are real months, so the rolling window can say
+       which twelve rather than making the landlord work it out. */
+    const rangeLabel =
+      range === "year"
+        ? `${now.getFullYear()} so far`
+        : months.length > 1
+          ? `${months[0].shortLabel} – ${months[months.length - 1].shortLabel}`
+          : (months[0]?.label ?? "Last 12 months");
+
+    return { total: short + long, shortTotal: short, longTotal: long, topProps, rangeLabel };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [properties, declarations, rents, range]);
 
@@ -143,14 +170,14 @@ function EarningsCard() {
   const maxTop = topProps[0]?.amount ?? 0;
 
   return (
-    <Card>
+    <Card tourId="earnings">
       <div className="flex items-center justify-between">
         <h2 style={{ fontWeight: 700, fontSize: 16, color: "#111827" }}>Earnings</h2>
         <div
           className="flex items-center"
           style={{ backgroundColor: "#f3f4f6", borderRadius: 999, padding: 3, fontSize: 12, fontWeight: 600 }}
         >
-          {(["month", "year"] as const).map((r) => (
+          {(["rolling", "year"] as const).map((r) => (
             <button
               key={r}
               type="button"
@@ -167,7 +194,7 @@ function EarningsCard() {
                 cursor: "pointer",
               }}
             >
-              {r === "month" ? "This month" : "This year"}
+              {r === "rolling" ? "Last 12 months" : "This year"}
             </button>
           ))}
         </div>
@@ -178,13 +205,7 @@ function EarningsCard() {
           <div className="mt-4">
             <div style={{ fontWeight: 700, fontSize: 34, color: "#111827" }}>{formatEuro(total)}</div>
             <div className="mt-1" style={{ fontSize: 13, color: "#6b7280" }}>
-              {range === "year"
-                ? `${now.getFullYear()} so far`
-                : new Date(now.getFullYear(), now.getMonth()).toLocaleString("en-GB", {
-                    month: "long",
-                    year: "numeric",
-                  })}{" "}
-              · recorded income
+              {rangeLabel} · recorded income
             </div>
           </div>
 
@@ -318,7 +339,7 @@ function ActionQueueCard() {
   const hasMore = visibleNotifications.length > MAX_ACTIONS;
 
   return (
-    <Card>
+    <Card tourId="actions">
       <div className="flex items-center justify-between">
         <h2 style={{ fontWeight: 700, fontSize: 16, color: "#111827" }}>Action queue</h2>
         {hasMore ? (

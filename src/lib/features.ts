@@ -7,6 +7,8 @@
  * no other edits, and nothing has drifted out of step in the meantime.
  */
 
+import { isDemo } from "./demoMode";
+
 /**
  * Google sign-in.
  *
@@ -61,3 +63,35 @@ export const CALENDAR_TAB_ENABLED = true;
  * numbers are still fake. Nothing in the build will stop you. Do not.
  */
 export const CALENDAR_IS_SIMULATED = true;
+
+/* ========================================================================== */
+/* Derived availability                                                        */
+/* ========================================================================== */
+
+/**
+ * Whether a property gets a Calendar tab at all.
+ *
+ * Three conditions, and the third is the interesting one:
+ *
+ *   1. The feature is on.
+ *   2. The property is short-term. A long-term let has no booking calendar.
+ *   3. **We are in demo mode.**
+ *
+ * WHY DEMO ONLY: the nights are invented (see `src/lib/calendarPreview.ts`).
+ * Showing a demo visitor sample data is exactly what a demo is for. Showing it
+ * to a landlord with a real portfolio, on a product whose whole promise is
+ * keeping their records straight, is a different thing entirely, however many
+ * amber warnings sit next to it. So the preview reaches prospects and pitches
+ * and never reaches someone who might act on it.
+ *
+ * Flip this to unconditional when the connection is real, not before. That is
+ * the same moment `CALENDAR_IS_SIMULATED` goes false.
+ *
+ * This lives here rather than in PropertyDetail because two callers need the
+ * same answer: the tab strip, and the product tour deciding whether its Calendar
+ * step has anywhere to land. A tour step pointing at a tab that does not exist
+ * is exactly the drift the `tabsFor` comment in PropertyDetail warns about.
+ */
+export function calendarAvailable(isShort: boolean): boolean {
+  return CALENDAR_TAB_ENABLED && isShort && isDemo();
+}

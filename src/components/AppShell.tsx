@@ -131,6 +131,10 @@ export function AppShell({
               key={item.key}
               to={item.to}
               aria-current={active ? "page" : undefined}
+              /* Anchor for the product tour's "you are here" spotlight. Both this
+                 and the sidebar item below carry it; only one is ever visible, and
+                 the overlay picks whichever has a real bounding box. */
+              data-tour-nav={item.key}
               className="relative flex flex-1 flex-col items-center justify-center gap-1"
               style={{
                 color: active ? "#FF6B35" : "#9ca3af",
@@ -202,6 +206,7 @@ function SidebarNavItem({
     <Link
       to={item.to}
       aria-current={active ? "page" : undefined}
+      data-tour-nav={item.key}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="flex items-center gap-3 rounded-lg transition-colors"

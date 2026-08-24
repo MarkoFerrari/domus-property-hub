@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Database, Download, FileSpreadsheet, HardDrive, LogOut, ShieldX } from "lucide-react";
+import { Compass, Database, Download, FileSpreadsheet, HardDrive, LogOut, ShieldX } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "../components/AppShell";
@@ -12,6 +12,7 @@ import { useAuth } from "../lib/auth";
 import { useStore } from "../lib/store";
 import { isDemo } from "../lib/demoMode";
 import { resetDemoData } from "../lib/db";
+import { useTour } from "../lib/tour";
 import {
   buildCertificatesCsv,
   buildFullJson,
@@ -25,6 +26,7 @@ export default function Settings() {
   const navigate = useNavigate();
   const { user, signOut, deleteAccount } = useAuth();
   const { properties, seedDemo, notifications, declarations, rents } = useStore();
+  const { restart: restartTour } = useTour();
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -129,6 +131,23 @@ export default function Settings() {
           {properties.length > 0 ? (
             <p className="mt-2" style={{ fontSize: 12, color: "#9ca3af" }}>
               You already have {properties.length} propert{properties.length === 1 ? "y" : "ies"}.
+            </p>
+          ) : null}
+        </SectionCard>
+
+        <SectionCard title="Product tour">
+          <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
+            The six-step walkthrough you saw the first time you signed in. It points at the
+            earnings summary, the action queue and the tabs inside a property.
+          </p>
+          <div className="sm:w-[260px]">
+            <Btn variant="secondary" onClick={restartTour} disabled={properties.length === 0}>
+              <Compass size={16} aria-hidden="true" /> Replay the tour
+            </Btn>
+          </div>
+          {properties.length === 0 ? (
+            <p className="mt-2" style={{ fontSize: 12, color: "#9ca3af" }}>
+              Add a property first — the tour points at things that do not exist yet.
             </p>
           ) : null}
         </SectionCard>

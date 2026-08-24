@@ -70,8 +70,8 @@ export default function PropertiesList() {
           </Card>
         ) : (
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {properties.map((p) => (
-              <PropertyCard key={p.id} property={p} />
+            {properties.map((p, i) => (
+              <PropertyCard key={p.id} property={p} first={i === 0} />
             ))}
           </div>
         )}
@@ -80,7 +80,7 @@ export default function PropertiesList() {
   );
 }
 
-function PropertyCard({ property }: { property: Property }) {
+function PropertyCard({ property, first = false }: { property: Property; first?: boolean }) {
   const { notifications } = useStore();
   /* Not getCompliance() — that only knows about certificates, so it called a
      property with zero recorded months "Compliant" while the badge counted
@@ -94,6 +94,9 @@ function PropertyCard({ property }: { property: Property }) {
       to={`/properties/${property.id}`}
       className="block overflow-hidden rounded-2xl border transition-shadow hover:shadow-md"
       style={{ borderColor: "#e5e7eb", backgroundColor: "#fff" }}
+      /* Only the first card is a tour target. The spotlight needs one element,
+         and highlighting the whole grid would explain nothing. */
+      data-tour={first ? "property-card" : undefined}
     >
       <div style={{ height: 140, backgroundColor: "#f3f4f6" }}>
         {property.photo ? (
