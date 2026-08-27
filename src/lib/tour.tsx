@@ -81,6 +81,17 @@ export type TourStep = {
   title: string;
   body: string;
   /**
+   * The same point in about half the words, for the phone sheet.
+   *
+   * Not an afterthought and not a truncation. The desktop card floats in empty
+   * space beside the target and can afford a paragraph; the phone sheet is
+   * docked over the navigation and every line it grows is a line of the actual
+   * screen it hides. Six wrapped lines of explanation on a 390px screen covered
+   * the bottom half of the thing being explained, which is the one thing a tour
+   * must never do. Falls back to `body` if a step has none.
+   */
+  bodyShort?: string;
+  /**
    * Which navigation section this step lives in.
    *
    * `key` matches a `data-tour-nav` attribute on the sidebar item (desktop) and
@@ -110,6 +121,8 @@ function buildSteps(properties: Property[]): TourStep[] {
       path: "/dashboard",
       title: "Your earnings, as you record them",
       body: "Everything you confirm lands here. File a declaration or confirm a month's rent and it joins this total, split between your short-term and long-term properties.",
+      bodyShort:
+        "Everything you record lands here, split between your short-term and long-term properties.",
       nav: NAV_DASHBOARD,
     },
     {
@@ -118,6 +131,8 @@ function buildSteps(properties: Property[]): TourStep[] {
       path: "/dashboard",
       title: "What needs you today",
       body: "Declarations coming due, rent still unconfirmed, certificates about to expire. Most urgent first. When this list is empty, you are done.",
+      bodyShort:
+        "Declarations due, rent unconfirmed, certificates expiring. Most urgent first. Empty means you are done.",
       nav: NAV_DASHBOARD,
     },
   ];
@@ -135,6 +150,7 @@ function buildSteps(properties: Property[]): TourStep[] {
       path: "/properties",
       title: "One card per property",
       body: "The badge tells you whether anything is outstanding before you open it, so you can scan the whole portfolio in a glance.",
+      bodyShort: "The badge tells you whether anything is outstanding, before you open it.",
       nav: NAV_PROPERTIES,
     },
     {
@@ -143,6 +159,8 @@ function buildSteps(properties: Property[]): TourStep[] {
       path: `${base}?tab=overview`,
       title: "Overview",
       body: "This property at a glance: the income recorded against it this year, and the six certificates Domus watches, each with the date it expires.",
+      bodyShort:
+        "Income recorded against this property this year, and the six certificates Domus watches.",
       nav: NAV_PROPERTIES,
     },
     {
@@ -153,6 +171,9 @@ function buildSteps(properties: Property[]): TourStep[] {
       body: isShort
         ? "Every completed month, and whether you have recorded it yet. Short-term properties carry two obligations a month, the stay declaration and ΤΑΚΚ, each with its own deadline."
         : "Every completed month, and whether the rent actually arrived. One confirmation a month, with the date it landed and room for a note.",
+      bodyShort: isShort
+        ? "Every completed month, and whether you have recorded it. Short-term months carry two obligations."
+        : "Every completed month, and whether the rent arrived. One confirmation each.",
       nav: NAV_PROPERTIES,
     },
     {
@@ -163,6 +184,9 @@ function buildSteps(properties: Property[]): TourStep[] {
       body: isShort
         ? "This opens one dialog covering both of that month's obligations. Enter what each one came to, or tick nothing to declare if the month earned nothing — a blank month still has to be filed. Once both are in, the month turns green and drops out of your action queue."
         : "This opens one dialog for the month: the amount that arrived, the date it landed, and a note if something was unusual. Domus never touches your bank, it records what you tell it. Confirming clears the month from your action queue.",
+      bodyShort: isShort
+        ? "One dialog covers both obligations. A month that earned nothing still has to be filed."
+        : "One dialog: the amount, the date it landed, an optional note. Domus never touches your bank.",
       nav: NAV_PROPERTIES,
     },
   );
@@ -177,6 +201,8 @@ function buildSteps(properties: Property[]): TourStep[] {
       path: `${base}?tab=calendar`,
       title: "Calendar",
       body: "Connect your Airbnb or Booking.com calendar and Domus counts booked nights next to your declarations. The nights shown here are a preview, not your real bookings.",
+      bodyShort:
+        "Connect Airbnb or Booking.com and booked nights sit next to your declarations. These are a preview.",
       nav: NAV_PROPERTIES,
     });
   }
