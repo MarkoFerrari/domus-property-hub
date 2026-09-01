@@ -49,7 +49,7 @@ export default function Welcome() {
         <h1 className="mt-8 text-[28px] font-extrabold leading-tight text-[#0D0D0D]">
           {firstName ? `Welcome, ${firstName}.` : "Welcome to Domus."}
         </h1>
-        <p className="mt-2 text-[15px] leading-relaxed text-[#6B7280]">
+        <p className="mt-2 text-[15px] leading-relaxed text-[#4B5563]">
           Domus watches three things for every property you add, so nothing quietly turns into a
           fine.
         </p>
@@ -82,7 +82,7 @@ export default function Welcome() {
           </Btn>
         </div>
 
-        <p className="mt-4 text-center text-[12px] text-[#9CA3AF]">
+        <p className="mt-4 text-center text-[12px] text-[#6B7280]">
           The example portfolio adds five Athens properties you can edit or delete at any time.
         </p>
       </div>
@@ -101,7 +101,7 @@ function Point({ icon, title, body }: { icon: React.ReactNode; title: string; bo
       </span>
       <span>
         <span className="block text-[14px] font-semibold text-[#0D0D0D]">{title}</span>
-        <span className="mt-0.5 block text-[13px] leading-relaxed text-[#6B7280]">{body}</span>
+        <span className="mt-0.5 block text-[13px] leading-relaxed text-[#4B5563]">{body}</span>
       </span>
     </li>
   );

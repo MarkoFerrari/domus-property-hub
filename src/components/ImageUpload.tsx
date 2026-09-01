@@ -166,14 +166,14 @@ export function ImageUpload({
         } disabled:opacity-40`}
       >
         {busy ? (
-          <span className="text-[13px] font-semibold text-[#6B7280]">Preparing your image…</span>
+          <span className="text-[13px] font-semibold text-[#4B5563]">Preparing your image…</span>
         ) : (
           <>
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F3F4F6]">
-              <Building2 size={18} color="#6B7280" aria-hidden="true" />
+              <Building2 size={18} color="#4B5563" aria-hidden="true" />
             </span>
             <span className="text-[14px] font-semibold text-[#0D0D0D]">Upload a photo</span>
-            <span className="text-[12px] text-[#6B7280]">Drag one here, or click to browse</span>
+            <span className="text-[12px] text-[#4B5563]">Drag one here, or click to browse</span>
           </>
         )}
       </button>

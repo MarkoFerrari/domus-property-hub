@@ -40,7 +40,7 @@ const shellVars: React.CSSProperties = {
   ["--border" as string]: "#e5e7eb",
   ["--text" as string]: "#111827",
   ["--text-subtle" as string]: "#374151",
-  ["--text-muted" as string]: "#6b7280",
+  ["--text-muted" as string]: "#4b5563",
   ["--accent" as string]: "#FF6B35",
   ["--accent-hover" as string]: "#e5511b",
   ["--accent-subtle" as string]: "#fff4ee",
@@ -84,7 +84,7 @@ export function AppShell({
           ))}
         </nav>
 
-        <div className="px-5 py-4" style={{ color: "#525252", fontSize: 11, lineHeight: 1.5 }}>
+        <div className="px-5 py-4" style={{ color: "#9ca3af", fontSize: 11, lineHeight: 1.5 }}>
           POC v3 — Greece pilot
           <br />
           {isDemo() ? "Demo. Data stays in this browser" : "Connected to your database"}
@@ -137,6 +137,10 @@ export function AppShell({
               data-tour-nav={item.key}
               className="relative flex flex-1 flex-col items-center justify-center gap-1"
               style={{
+                /* #9ca3af, not the light-surface muted grey. This bar is
+                   #171717: on dark, #9ca3af is 7.06:1 (AAA) and the lighter
+                   greys used on white would drop to 3.7:1. Contrast on a dark
+                   surface runs the opposite way. */
                 color: active ? "#FF6B35" : "#9ca3af",
                 fontWeight: active ? 600 : 500,
                 fontSize: 11,
@@ -344,7 +348,7 @@ function AvatarMenu() {
             <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>
               {user?.fullName || "Landlord"}
             </div>
-            <div className="truncate" style={{ fontSize: 12, color: "#6b7280" }}>
+            <div className="truncate" style={{ fontSize: 12, color: "#4b5563" }}>
               {user?.email}
             </div>
           </div>

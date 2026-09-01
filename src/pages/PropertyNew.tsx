@@ -40,7 +40,7 @@ export default function PropertyNew() {
     <AppShell activeKey="properties" title="Add property" topbarRight={<span />}>
       <div className="mx-auto w-full max-w-[840px]">
         <h1 style={{ fontWeight: 700, fontSize: 24, color: "#111827" }}>Add a property</h1>
-        <p className="mt-1 mb-6" style={{ fontSize: 14, color: "#6b7280" }}>
+        <p className="mt-1 mb-6" style={{ fontSize: 14, color: "#4b5563" }}>
           You can change any of this later. Certificates can be added now or whenever you have them.
         </p>
         <PropertyForm submitLabel="Add property" onSubmit={submit} onCancelTo="/properties" />

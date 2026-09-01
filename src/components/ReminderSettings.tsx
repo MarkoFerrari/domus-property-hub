@@ -81,7 +81,7 @@ export function ReminderSettings() {
 
   return (
     <SectionCard title="Reminder emails">
-      <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
+      <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.55 }}>
         Domus can email you when something is coming due, so you do not have to remember to open it.
         One email a day at most, and only when there is actually something to tell you.
       </p>
@@ -120,7 +120,7 @@ export function ReminderSettings() {
             <option value="14">14 days before</option>
             <option value="30">30 days before</option>
           </SelectInput>
-          <p className="mt-1.5" style={{ fontSize: 12, color: "#9ca3af" }}>
+          <p className="mt-1.5" style={{ fontSize: 12, color: "#6b7280" }}>
             Anything already overdue is included regardless.
           </p>
         </div>

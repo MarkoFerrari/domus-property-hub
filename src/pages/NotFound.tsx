@@ -9,7 +9,7 @@ export default function NotFound() {
       <Logo className="h-7 w-auto" />
       <div>
         <h1 style={{ fontSize: 28, fontWeight: 800, color: "#0D0D0D" }}>Page not found</h1>
-        <p className="mt-2" style={{ fontSize: 15, color: "#6B7280" }}>
+        <p className="mt-2" style={{ fontSize: 15, color: "#4B5563" }}>
           That link does not lead anywhere in Domus.
         </p>
       </div>

@@ -59,11 +59,11 @@ export const TextInput = forwardRef<HTMLInputElement, InputProps>(function TextI
         aria-invalid={invalid || undefined}
         className={`h-12 w-full rounded-lg border-[1.5px] bg-white px-4 ${
           rightSlot ? "pr-11" : ""
-        } text-[15px] text-[#0D0D0D] placeholder:text-[#9CA3AF] outline-none transition-colors ${borderClass} ${className}`}
+        } text-[15px] text-[#0D0D0D] placeholder:text-[#6B7280] outline-none transition-colors ${borderClass} ${className}`}
         {...rest}
       />
       {rightSlot ? (
-        <div className="absolute inset-y-0 right-3 flex items-center text-[#6B7280]">{rightSlot}</div>
+        <div className="absolute inset-y-0 right-3 flex items-center text-[#4B5563]">{rightSlot}</div>
       ) : null}
     </div>
   );
@@ -89,7 +89,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
     return (
       <textarea
         ref={ref}
-        className={`w-full rounded-lg border-[1.5px] border-[#E8E8E8] bg-white px-4 py-3 text-[15px] text-[#0D0D0D] placeholder:text-[#9CA3AF] outline-none transition-colors focus:border-[#0D0D0D] ${className}`}
+        className={`w-full rounded-lg border-[1.5px] border-[#E8E8E8] bg-white px-4 py-3 text-[15px] text-[#0D0D0D] placeholder:text-[#6B7280] outline-none transition-colors focus:border-[#0D0D0D] ${className}`}
         {...rest}
       />
     );
@@ -108,7 +108,7 @@ export function FieldLabel({ children, htmlFor }: { children: ReactNode; htmlFor
 
 export function HelperText({ children, error }: { children: ReactNode; error?: boolean }) {
   return (
-    <p className={`mt-1.5 text-[12px] ${error ? "text-[#DC2626]" : "text-[#6B7280]"}`}>{children}</p>
+    <p className={`mt-1.5 text-[12px] ${error ? "text-[#DC2626]" : "text-[#4B5563]"}`}>{children}</p>
   );
 }
 
@@ -125,7 +125,7 @@ export function ErrorBanner({ children }: { children: ReactNode }) {
 
 export function InfoBanner({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-lg border border-[#E8E8E8] bg-[#F9F9F9] px-4 py-3 text-[13px] text-[#6B7280]">
+    <div className="rounded-lg border border-[#E8E8E8] bg-[#F9F9F9] px-4 py-3 text-[13px] text-[#4B5563]">
       {children}
     </div>
   );

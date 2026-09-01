@@ -208,7 +208,7 @@ export default function PropertyDetail() {
         {/* Header */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <Link to="/properties" className="text-[13px] text-[#6b7280] hover:text-[#111827]">
+            <Link to="/properties" className="text-[13px] text-[#4b5563] hover:text-[#111827]">
               ← All properties
             </Link>
             <h1 className="mt-2" style={{ fontWeight: 700, fontSize: 26, color: "#111827" }}>
@@ -216,7 +216,7 @@ export default function PropertyDetail() {
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-3">
               <TypeTag type={property.type} />
-              <span style={{ fontSize: 13, color: "#6b7280" }}>
+              <span style={{ fontSize: 13, color: "#4b5563" }}>
                 {[property.address, property.city].filter(Boolean).join(", ") || "No address set"}
               </span>
               {/* Same feed as the card and the badge. A green pill here on a
@@ -293,7 +293,7 @@ export default function PropertyDetail() {
                 padding: "10px 16px",
                 fontSize: 14,
                 fontWeight: 600,
-                color: tab === t ? "#111827" : "#6b7280",
+                color: tab === t ? "#111827" : "#4b5563",
                 borderBottom: tab === t ? "2px solid #FF6B35" : "2px solid transparent",
                 background: "none",
                 cursor: "pointer",
@@ -379,7 +379,7 @@ export default function PropertyDetail() {
                           <span className="block truncate text-[14px] font-semibold text-[#111827]">
                             {name}
                           </span>
-                          <span className="block truncate text-[12px] text-[#6b7280]">
+                          <span className="block truncate text-[12px] text-[#4b5563]">
                             {certExpiryLabel(rec, status)}
                             {rec?.file ? ` · ${rec.file}` : ""}
                           </span>
@@ -387,7 +387,7 @@ export default function PropertyDetail() {
                         <StatusPill status={status} size="sm">
                           {CERT_STATUS_LABEL[status]}
                         </StatusPill>
-                        <ChevronRight size={16} color="#9ca3af" aria-hidden="true" />
+                        <ChevronRight size={16} color="#6b7280" aria-hidden="true" />
                       </button>
                     </li>
                   );
@@ -585,12 +585,12 @@ function PaymentsTab({
         <h2 style={{ fontWeight: 700, fontSize: 16, color: "#111827" }}>
           {isShort ? "Monthly obligations" : "Monthly rent"}
         </h2>
-        <p className="mt-1" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.5 }}>
+        <p className="mt-1" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.5 }}>
           {isShort
             ? "The last 12 completed months. Each month carries two obligations with two different deadlines, and both are listed. A month that earned nothing still has to be declared."
             : "The last 12 completed months. Confirm each month once the money has actually arrived."}
         </p>
-        <p className="mt-2" style={{ fontSize: 12, color: "#9ca3af" }}>
+        <p className="mt-2" style={{ fontSize: 12, color: "#6b7280" }}>
           The current month is not listed. You cannot record a month that has not ended.
         </p>
       </div>
@@ -617,7 +617,7 @@ function PaymentsTab({
               ) : null}
             </div>
 
-            <div className="mt-1" style={{ fontSize: 13, color: "#6b7280" }}>
+            <div className="mt-1" style={{ fontSize: 13, color: "#4b5563" }}>
               {isShort ? `Due ${r.due}` : r.due}
             </div>
 
@@ -649,7 +649,7 @@ function PaymentsTab({
       <div className="hidden sm:block">
         <table className="w-full" style={{ borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ fontSize: 11, letterSpacing: "0.06em", color: "#9ca3af", textAlign: "left" }}>
+            <tr style={{ fontSize: 11, letterSpacing: "0.06em", color: "#6b7280", textAlign: "left" }}>
               <th scope="col" className="py-2 font-bold">MONTH</th>
               <th scope="col" className="py-2 font-bold">{isShort ? "DEADLINES" : "AMOUNT"}</th>
               <th scope="col" className="py-2 font-bold">STATUS</th>
@@ -662,7 +662,7 @@ function PaymentsTab({
                 <td className="py-3" style={{ fontSize: 14, fontWeight: 600, color: "#111827" }}>
                   {r.month.label}
                 </td>
-                <td className="py-3" style={{ fontSize: 13, color: "#6b7280" }}>
+                <td className="py-3" style={{ fontSize: 13, color: "#4b5563" }}>
                   {r.due}
                 </td>
                 <td className="py-3">
@@ -691,7 +691,7 @@ function PaymentsTab({
         </table>
       </div>
 
-      <p className="mt-4" style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.55 }}>
+      <p className="mt-4" style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.55 }}>
         {DEADLINE_CAVEAT_LONG}
       </p>
     </Card>

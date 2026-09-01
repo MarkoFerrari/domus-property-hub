@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<
             Something broke on this screen.
           </h1>
 
-          <p className="mt-3 text-[14px] leading-relaxed text-[#6B7280]">
+          <p className="mt-3 text-[14px] leading-relaxed text-[#4B5563]">
             Your data has not been touched. Nothing you recorded has been lost. Reloading usually
             clears it.
           </p>
@@ -68,10 +68,10 @@ export class ErrorBoundary extends Component<
           </div>
 
           <details className="mt-8 text-left">
-            <summary className="cursor-pointer text-[12px] font-semibold text-[#9ca3af]">
+            <summary className="cursor-pointer text-[12px] font-semibold text-[#6b7280]">
               Technical detail (for support)
             </summary>
-            <pre className="mt-2 overflow-x-auto rounded-lg bg-[#F9F9F9] p-3 text-[11px] leading-relaxed text-[#6B7280]">
+            <pre className="mt-2 overflow-x-auto rounded-lg bg-[#F9F9F9] p-3 text-[11px] leading-relaxed text-[#4B5563]">
               {error.message}
             </pre>
           </details>

@@ -32,7 +32,7 @@ function Splash() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white">
       <Logo className="h-8 w-auto opacity-90" />
-      <p className="text-[13px] text-[#6B7280]">Loading your portfolio…</p>
+      <p className="text-[13px] text-[#4B5563]">Loading your portfolio…</p>
     </div>
   );
 }

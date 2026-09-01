@@ -104,7 +104,7 @@ export default function Settings() {
               <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>
                 {!isDemo() ? "Connected to your database" : "Demo. Nothing is saved"}
               </div>
-              <p className="mt-1" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
+              <p className="mt-1" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.55 }}>
                 {!isDemo()
                   ? "Your portfolio is stored in your own Supabase project. Row-level security means only your account can read or write your rows."
                   : "Everything you have entered is held in this browser and has never left your device. Signing out, clearing your browser, or opening Domus somewhere else all start you from empty. There is no copy and no way to recover it."}
@@ -114,7 +114,7 @@ export default function Settings() {
         </SectionCard>
 
         <SectionCard title="Example portfolio">
-          <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
+          <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.55 }}>
             Adds five Athens properties with a realistic mix of certificate states, so you can see
             how alerts appear and clear. Only works when your portfolio is empty.
           </p>
@@ -129,14 +129,14 @@ export default function Settings() {
             </Btn>
           </div>
           {properties.length > 0 ? (
-            <p className="mt-2" style={{ fontSize: 12, color: "#9ca3af" }}>
+            <p className="mt-2" style={{ fontSize: 12, color: "#6b7280" }}>
               You already have {properties.length} propert{properties.length === 1 ? "y" : "ies"}.
             </p>
           ) : null}
         </SectionCard>
 
         <SectionCard title="Product tour">
-          <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
+          <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.55 }}>
             The six-step walkthrough you saw the first time you signed in. It points at the
             earnings summary, the action queue and the tabs inside a property.
           </p>
@@ -146,7 +146,7 @@ export default function Settings() {
             </Btn>
           </div>
           {properties.length === 0 ? (
-            <p className="mt-2" style={{ fontSize: 12, color: "#9ca3af" }}>
+            <p className="mt-2" style={{ fontSize: 12, color: "#6b7280" }}>
               Add a property first — the tour points at things that do not exist yet.
             </p>
           ) : null}
@@ -155,7 +155,7 @@ export default function Settings() {
         <ReminderSettings />
 
         <SectionCard title="Export your data">
-          <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
+          <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.55 }}>
             Everything Domus holds about you, downloaded straight from this browser. The ledger CSV
             is the one your accountant wants. Amounts are what you entered. None of these files is
             evidence of a filing.
@@ -178,7 +178,7 @@ export default function Settings() {
             </div>
           </div>
           {properties.length === 0 ? (
-            <p className="mt-2" style={{ fontSize: 12, color: "#9ca3af" }}>
+            <p className="mt-2" style={{ fontSize: 12, color: "#6b7280" }}>
               Nothing to export yet.
             </p>
           ) : null}
@@ -213,7 +213,7 @@ export default function Settings() {
 
         {!isDemo() ? (
           <SectionCard title="Delete your account">
-            <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.55 }}>
+            <p className="-mt-2 mb-4" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.55 }}>
               Removes your account and everything attached to it: every property, declaration, rent
               record, uploaded document and edit log entry. It happens immediately, there is no
               holding period and no undo. Export first if you want a copy.
@@ -230,7 +230,7 @@ export default function Settings() {
           </SectionCard>
         ) : null}
 
-        <p className="pb-4 text-center" style={{ fontSize: 12, color: "#9ca3af" }}>
+        <p className="pb-4 text-center" style={{ fontSize: 12, color: "#6b7280" }}>
           Domus POC v3, Greece pilot. Domus records and reminds. It never moves money and never
           edits your listings.{" "}
           <Link to="/privacy" className="underline">

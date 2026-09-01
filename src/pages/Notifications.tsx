@@ -54,7 +54,7 @@ export default function Notifications() {
     <AppShell activeKey="notifications">
       <div className="mx-auto w-full max-w-[1200px]">
         <h1 style={{ fontWeight: 700, fontSize: 24, color: "#111827" }}>Notifications</h1>
-        <p className="mt-1" style={{ fontSize: 14, color: "#6b7280" }}>
+        <p className="mt-1" style={{ fontSize: 14, color: "#4b5563" }}>
           {visibleNotifications.length === 0
             ? "Nothing needs you right now."
             : `${visibleNotifications.length} open · ${high} high priority. Sorted by urgency.`}
@@ -83,7 +83,7 @@ export default function Notifications() {
                     fontWeight: 600,
                     border: `1px solid ${active ? "#171717" : "#e5e7eb"}`,
                     backgroundColor: active ? "#171717" : "#fff",
-                    color: active ? "#fff" : "#6b7280",
+                    color: active ? "#fff" : "#4b5563",
                     cursor: "pointer",
                   }}
                 >
@@ -123,7 +123,7 @@ export default function Notifications() {
             <Card>
               <div className="mb-3 flex items-center justify-between">
                 <SectionTitle>Snoozed</SectionTitle>
-                <span style={{ fontSize: 12, color: "#9ca3af" }}>
+                <span style={{ fontSize: 12, color: "#6b7280" }}>
                   Still unresolved — just hidden from the list above
                 </span>
               </div>
@@ -136,13 +136,13 @@ export default function Notifications() {
                     <div className="min-w-0 flex-1">
                       <div
                         className="sm:truncate"
-                        style={{ fontSize: 13, fontWeight: 600, color: "#6b7280", lineHeight: 1.4 }}
+                        style={{ fontSize: 13, fontWeight: 600, color: "#4b5563", lineHeight: 1.4 }}
                       >
                         {n.title}
                       </div>
                       <div
                         className="sm:truncate"
-                        style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.45 }}
+                        style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.45 }}
                       >
                         {n.subtitle}
                       </div>

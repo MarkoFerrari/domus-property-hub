@@ -31,14 +31,14 @@ export function AuthShell({
         <button
           type="button"
           onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
-          className="inline-flex items-center gap-1.5 text-[14px] text-[#6B7280] transition-colors hover:text-[#0D0D0D]"
+          className="inline-flex items-center gap-1.5 text-[14px] text-[#4B5563] transition-colors hover:text-[#0D0D0D]"
         >
           <ArrowLeft size={16} aria-hidden="true" />
           Back
         </button>
 
         <h1 className="mt-8 text-[28px] font-extrabold leading-tight text-[#0D0D0D]">{title}</h1>
-        {subtitle ? <p className="mt-2 text-[15px] text-[#6B7280]">{subtitle}</p> : null}
+        {subtitle ? <p className="mt-2 text-[15px] text-[#4B5563]">{subtitle}</p> : null}
 
         <div className="mt-8">{children}</div>
 
@@ -52,7 +52,7 @@ export function AuthShell({
 
 export function DemoModeNote() {
   return (
-    <p className="mt-8 rounded-lg border border-[#E8E8E8] bg-[#F9F9F9] px-4 py-3 text-[12px] leading-relaxed text-[#6B7280]">
+    <p className="mt-8 rounded-lg border border-[#E8E8E8] bg-[#F9F9F9] px-4 py-3 text-[12px] leading-relaxed text-[#4B5563]">
       <strong className="font-semibold text-[#0D0D0D]">Demo.</strong> Accounts and data live in this
       browser only and disappear when you leave. The verification code, if you are asked for one, is{" "}
       <strong className="font-semibold text-[#0D0D0D]">123456</strong>.

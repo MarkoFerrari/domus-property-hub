@@ -317,7 +317,7 @@ function ObligationSection({
         </StatusPill>
       </div>
 
-      <p className="mt-1" style={{ fontSize: 13, color: "#6b7280" }}>
+      <p className="mt-1" style={{ fontSize: 13, color: "#4b5563" }}>
         Due {deadlineLabel(month, type)}
       </p>
 

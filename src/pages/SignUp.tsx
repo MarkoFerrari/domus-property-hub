@@ -150,7 +150,7 @@ export default function SignUp() {
               onChange={(e) => setAgreed(e.target.checked)}
               className="mt-0.5 h-4 w-4 shrink-0 accent-[#0D0D0D]"
             />
-            <span className="text-[14px] text-[#6B7280]">
+            <span className="text-[14px] text-[#4B5563]">
               I agree to the{" "}
               <a href="#terms" className="text-[#2563EB] underline">
                 Terms of Service

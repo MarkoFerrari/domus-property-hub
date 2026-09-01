@@ -189,14 +189,14 @@ export default function Verify() {
         {error ? <p className="mt-3 text-[12px] text-[#DC2626]">{error}</p> : null}
 
         <div className="mt-4 flex flex-col gap-1">
-          <p className="text-[14px] text-[#6B7280]">
+          <p className="text-[14px] text-[#4B5563]">
             {expired ? (
               <span className="text-[#DC2626]">Code expired.</span>
             ) : (
               <>Code expires in {clock}</>
             )}
           </p>
-          <p className="text-[14px] text-[#6B7280]">
+          <p className="text-[14px] text-[#4B5563]">
             Nothing arrived?{" "}
             <button
               type="button"
@@ -219,7 +219,7 @@ export default function Verify() {
              which sends a LINK and no code at all. The boxes above only work once
              the template includes {{ .Token }}. Saying so beats a landlord staring
              at six empty boxes with nothing to type. See SETUP_SUPABASE.md step 5e. */
-          <p className="mt-4 rounded-lg bg-[#F9F9F9] px-4 py-3 text-[12px] leading-relaxed text-[#6B7280]">
+          <p className="mt-4 rounded-lg bg-[#F9F9F9] px-4 py-3 text-[12px] leading-relaxed text-[#4B5563]">
             Emails can take a minute, and they sometimes land in spam. Signing up with an address you
             cannot actually open is the usual reason nothing arrives.
           </p>

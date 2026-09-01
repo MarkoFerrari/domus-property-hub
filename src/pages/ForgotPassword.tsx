@@ -49,7 +49,7 @@ export default function ForgotPassword() {
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F0FDF4]">
             <MailCheck size={26} color="#16A34A" aria-hidden="true" />
           </div>
-          <p className="text-[14px] leading-relaxed text-[#6B7280]">
+          <p className="text-[14px] leading-relaxed text-[#4B5563]">
             Nothing in your inbox after a few minutes? Check spam, then try again with a different
             address.
           </p>

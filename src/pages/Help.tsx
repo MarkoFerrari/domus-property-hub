@@ -35,7 +35,7 @@ export default function Help() {
     <AppShell activeKey="dashboard" title="Help Center">
       <div className="mx-auto flex w-full max-w-[760px] flex-col gap-4">
         <h1 style={{ fontWeight: 700, fontSize: 24, color: "#111827" }}>Help Center</h1>
-        <p className="-mt-2" style={{ fontSize: 14, color: "#6b7280" }}>
+        <p className="-mt-2" style={{ fontSize: 14, color: "#4b5563" }}>
           The rules Domus is built around, in plain language.
         </p>
 
@@ -57,7 +57,7 @@ export default function Help() {
               </li>
             ))}
           </ul>
-          <p className="mt-4" style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.55 }}>
+          <p className="mt-4" style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.55 }}>
             {DEADLINE_CAVEAT_LONG}
           </p>
         </SectionCard>
@@ -67,7 +67,7 @@ export default function Help() {
             {FAQ.map((f) => (
               <li key={f.q} className="py-4 first:pt-0 last:pb-0">
                 <h3 style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{f.q}</h3>
-                <p className="mt-1" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>
+                <p className="mt-1" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.6 }}>
                   {f.a}
                 </p>
               </li>
@@ -76,7 +76,7 @@ export default function Help() {
         </SectionCard>
 
         <SectionCard title="Not built yet">
-          <p style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>
+          <p style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.6 }}>
             This is a pilot. The Airbnb calendar connection on the property page, and per-certificate
             renewal history, are still to come. Everything else on these screens is working.
           </p>

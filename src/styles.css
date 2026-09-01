@@ -163,8 +163,15 @@
   --color-gray-50: #f9f9f9;
   --color-gray-100: #f3f3f3;
   --color-gray-200: #e8e8e8;
+  /* The muted-text ramp. Every step below is the real Tailwind grey for its
+     number — gray-600 used to hold #6b7280, which is gray-500's value, and that
+     mislabelling is how secondary text ended up one step lighter than intended.
+     Contrast on white: 400 = 2.54:1, 500 = 4.83:1, 600 = 7.56:1.
+     Body and secondary text take 600 (AAA). Small labels take 500 (AA).
+     400 is for dark surfaces only, where it reads 7.06:1 on #171717. */
   --color-gray-400: #9ca3af;
-  --color-gray-600: #6b7280;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
   --color-gray-900: #111827;
   --color-error: #dc2626;
   --color-error-bg: #fef2f2;

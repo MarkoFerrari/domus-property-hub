@@ -83,7 +83,7 @@ export function CalendarTab({
       <div className="mt-5">
         <SectionCard title="Calendar">
           <EmptyBlock
-            icon={<CalendarDays size={26} color="#9ca3af" aria-hidden="true" />}
+            icon={<CalendarDays size={26} color="#6b7280" aria-hidden="true" />}
             title="See your booked nights here"
             body="Connect a calendar and Domus shows which nights were booked each month, so you are not counting them by hand. Nights only: a calendar connection never includes prices."
             action={
@@ -126,7 +126,7 @@ export function CalendarTab({
             type="button"
             onClick={() => setDisconnectOpen(true)}
             className="inline-flex items-center gap-1.5 transition-colors hover:text-[#111827]"
-            style={{ fontSize: 13, fontWeight: 600, color: "#6b7280" }}
+            style={{ fontSize: 13, fontWeight: 600, color: "#4b5563" }}
           >
             <Unlink size={14} aria-hidden="true" /> Disconnect
           </button>
@@ -147,7 +147,7 @@ export function CalendarTab({
             <p style={{ fontSize: 15, fontWeight: 700, color: "#111827" }}>
               {month.label} {month.year}
             </p>
-            <p style={{ fontSize: 13, color: "#6b7280" }}>{nightsSummary(data)}</p>
+            <p style={{ fontSize: 13, color: "#4b5563" }}>{nightsSummary(data)}</p>
           </div>
           <Btn
             variant="secondary"
@@ -171,7 +171,7 @@ export function CalendarTab({
                   fontSize: 11,
                   fontWeight: 700,
                   letterSpacing: "0.06em",
-                  color: "#9ca3af",
+                  color: "#6b7280",
                   textAlign: "center",
                   paddingBottom: 4,
                 }}
@@ -199,7 +199,7 @@ export function CalendarTab({
                     borderRadius: 8,
                     fontSize: 13,
                     fontWeight: booked ? 700 : 500,
-                    color: booked ? "#9A3412" : "#6b7280",
+                    color: booked ? "#9A3412" : "#4b5563",
                     backgroundColor: booked ? "#FFF1EA" : "#ffffff",
                     border: `1px solid ${booked ? "#FFD5C6" : "#f3f4f6"}`,
                   }}
@@ -210,7 +210,7 @@ export function CalendarTab({
             })}
           </div>
 
-          <div className="mt-4 flex items-center gap-4" style={{ fontSize: 12, color: "#6b7280" }}>
+          <div className="mt-4 flex items-center gap-4" style={{ fontSize: 12, color: "#4b5563" }}>
             <span className="inline-flex items-center gap-1.5">
               <span
                 aria-hidden="true"
@@ -243,7 +243,7 @@ export function CalendarTab({
 
           {/* The checkout-day rule, said out loud. A landlord counting squares
               and getting one more than Domus will assume Domus is wrong. */}
-          <p className="mt-3" style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5 }}>
+          <p className="mt-3" style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.5 }}>
             A night is counted where the guest sleeps, so a checkout day is not a
             booked night. A stay from the 10th to the 12th is two nights.
           </p>
@@ -308,12 +308,12 @@ function ConnectDialog({
             className="flex w-full items-center gap-3 rounded-lg px-4 py-3.5 text-left transition-colors hover:bg-[#fafafa]"
             style={{ border: "1.5px solid #e8e8e8" }}
           >
-            <Link2 size={18} color="#6b7280" aria-hidden="true" />
+            <Link2 size={18} color="#4b5563" aria-hidden="true" />
             <span className="min-w-0 flex-1">
               <span className="block" style={{ fontSize: 15, fontWeight: 600, color: "#0D0D0D" }}>
                 {CHANNEL_LABEL[channel]}
               </span>
-              <span className="block" style={{ fontSize: 12, color: "#6b7280" }}>
+              <span className="block" style={{ fontSize: 12, color: "#4b5563" }}>
                 Booked nights only. No prices, no guest details.
               </span>
             </span>

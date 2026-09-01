@@ -74,7 +74,7 @@ export default function Landing() {
             Every deadline, every euro, one screen.
           </h1>
 
-          <p className="mt-4 text-[16px] text-[#6B7280]" style={{ lineHeight: 1.6 }}>
+          <p className="mt-4 text-[16px] text-[#4B5563]" style={{ lineHeight: 1.6 }}>
             Domus keeps small Greek landlords out of fine territory and on top of their rental
             income, for both Airbnb and long-term leases.
           </p>
@@ -89,7 +89,7 @@ export default function Landing() {
                 <span className="mt-0.5 shrink-0 text-[#0D0D0D]">{f.icon}</span>
                 <span>
                   <span className="block text-[14px] font-semibold text-[#0D0D0D]">{f.label}</span>
-                  <span className="mt-0.5 block text-[13px] text-[#6B7280]">{f.caption}</span>
+                  <span className="mt-0.5 block text-[13px] text-[#4B5563]">{f.caption}</span>
                 </span>
               </li>
             ))}
@@ -127,7 +127,7 @@ export default function Landing() {
             </p>
           </div>
 
-          <p className="mt-6 text-[12px] leading-relaxed text-[#9CA3AF]">
+          <p className="mt-6 text-[12px] leading-relaxed text-[#6B7280]">
             Domus records and reminds. It never moves money and never edits your listings.
           </p>
         </div>

@@ -55,7 +55,7 @@ export default function PropertyEdit() {
     <AppShell activeKey="properties" title="Edit property" topbarRight={<span />}>
       <div className="mx-auto w-full max-w-[840px]">
         <h1 style={{ fontWeight: 700, fontSize: 24, color: "#111827" }}>Edit {property.name}</h1>
-        <p className="mt-1 mb-6" style={{ fontSize: 14, color: "#6b7280" }}>
+        <p className="mt-1 mb-6" style={{ fontSize: 14, color: "#4b5563" }}>
           Every field here is editable. Updating a certificate clears its alert everywhere the
           moment you save.
         </p>

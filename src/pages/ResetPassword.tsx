@@ -69,7 +69,7 @@ export default function ResetPassword() {
   if (ready === "checking") {
     return (
       <AuthShell title="Checking your link" backTo="/signin">
-        <p className="text-[14px] text-[#6B7280]">One moment.</p>
+        <p className="text-[14px] text-[#4B5563]">One moment.</p>
       </AuthShell>
     );
   }

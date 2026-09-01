@@ -47,7 +47,7 @@ export function GoogleAuthButton({ onClick, busy }: Props) {
         <GoogleGlyph />
         Continue with Google
       </Btn>
-      <p id="google-unavailable" className="text-center text-[13px] leading-snug text-[#6B7280]">
+      <p id="google-unavailable" className="text-center text-[13px] leading-snug text-[#4B5563]">
         Google sign-in is coming soon. Use your email address for now.
       </p>
     </div>

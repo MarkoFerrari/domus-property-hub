@@ -61,7 +61,7 @@ export default function SignIn() {
       title="Welcome back"
       subtitle="Sign in to your portfolio."
       footer={
-        <p className="text-center text-[14px] leading-relaxed text-[#6B7280]">
+        <p className="text-center text-[14px] leading-relaxed text-[#4B5563]">
           No account yet? Sign-ups are not open during the pilot.{" "}
           <button
             type="button"
@@ -109,7 +109,7 @@ export default function SignIn() {
 
         <Link
           to="/forgot-password"
-          className="-mt-2 self-start text-[13px] font-semibold text-[#6B7280] underline hover:text-[#0D0D0D]"
+          className="-mt-2 self-start text-[13px] font-semibold text-[#4B5563] underline hover:text-[#0D0D0D]"
         >
           Forgot your password?
         </Link>

@@ -618,7 +618,7 @@ export function TourOverlay() {
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.08em",
-                color: "#9ca3af",
+                color: "#6b7280",
                 textTransform: "uppercase",
               }}
             >
@@ -631,7 +631,7 @@ export function TourOverlay() {
               style={{
                 fontSize: 11,
                 fontWeight: 600,
-                color: "#9ca3af",
+                color: "#6b7280",
                 whiteSpace: "nowrap",
                 flexShrink: 0,
               }}
@@ -677,7 +677,7 @@ export function TourOverlay() {
             marginTop: isNarrow ? 5 : 8,
             fontSize: isNarrow ? 13 : 14,
             lineHeight: isNarrow ? 1.5 : 1.55,
-            color: "#6b7280",
+            color: "#4b5563",
           }}
         >
           {bodyText}
@@ -697,7 +697,7 @@ export function TourOverlay() {
               padding: 0,
               fontSize: 13,
               fontWeight: 600,
-              color: "#6b7280",
+              color: "#4b5563",
               cursor: "pointer",
             }}
           >

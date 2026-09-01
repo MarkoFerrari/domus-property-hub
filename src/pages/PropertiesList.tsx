@@ -33,7 +33,7 @@ export default function PropertiesList() {
     <AppShell activeKey="properties" topbarRight={topRight}>
       <div className="mx-auto w-full max-w-[1200px]">
         <h1 style={{ fontWeight: 700, fontSize: 24, color: "#111827" }}>Your properties</h1>
-        <p className="mt-1" style={{ fontSize: 14, color: "#6b7280" }}>
+        <p className="mt-1" style={{ fontSize: 14, color: "#4b5563" }}>
           {loading
             ? "Loading…"
             : properties.length === 0
@@ -46,7 +46,7 @@ export default function PropertiesList() {
         ) : properties.length === 0 ? (
           <Card className="mt-6">
             <EmptyBlock
-              icon={<Building2 size={28} color="#9ca3af" aria-hidden="true" />}
+              icon={<Building2 size={28} color="#6b7280" aria-hidden="true" />}
               title="No properties yet"
               body="Add your first property and Domus starts tracking its declarations, rent and certificates straight away."
               action={
@@ -109,7 +109,7 @@ function PropertyCard({ property, first = false }: { property: Property; first?:
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <Building2 size={28} color="#9ca3af" aria-hidden="true" />
+            <Building2 size={28} color="#6b7280" aria-hidden="true" />
           </div>
         )}
       </div>
@@ -132,7 +132,7 @@ function PropertyCard({ property, first = false }: { property: Property; first?:
         {property.address || property.city ? (
           <div
             className="mt-3 flex items-center gap-1.5 truncate"
-            style={{ fontSize: 12, color: "#6b7280" }}
+            style={{ fontSize: 12, color: "#4b5563" }}
           >
             <MapPin size={13} aria-hidden="true" />
             {[property.address, property.city].filter(Boolean).join(", ")}
@@ -141,7 +141,7 @@ function PropertyCard({ property, first = false }: { property: Property; first?:
 
         <div
           className="mt-3 flex items-center justify-between border-t pt-3"
-          style={{ borderColor: "#f3f4f6", fontSize: 12, color: "#6b7280" }}
+          style={{ borderColor: "#f3f4f6", fontSize: 12, color: "#4b5563" }}
         >
           <span>
             {property.type === "short"

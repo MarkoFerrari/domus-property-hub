@@ -67,7 +67,7 @@ export function SectionTitle({ children }: { children: ReactNode }) {
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: "#9ca3af" }}>
+    <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: "#6b7280" }}>
       {children}
     </div>
   );
@@ -91,12 +91,12 @@ export function MetricCard({
       className="rounded-xl border"
       style={{ borderColor: "#e5e7eb", backgroundColor: "#fff", padding: 16 }}
     >
-      <div style={{ fontSize: 12, fontWeight: 600, color: "#6b7280" }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: "#4b5563" }}>{label}</div>
       <div className="mt-1" style={{ fontSize: 24, fontWeight: 700, color: valueColor, lineHeight: 1.2 }}>
         {value}
       </div>
       {caption ? (
-        <div className="mt-1" style={{ fontSize: 12, color: "#9ca3af" }}>
+        <div className="mt-1" style={{ fontSize: 12, color: "#6b7280" }}>
           {caption}
         </div>
       ) : null}
@@ -113,7 +113,7 @@ const STATUS_STYLE: Record<string, { bg: string; fg: string }> = {
   expired: { bg: "#fee2e2", fg: "#b91c1c" },
   missing: { bg: "#fee2e2", fg: "#b91c1c" },
   action: { bg: "#fee2e2", fg: "#b91c1c" },
-  neutral: { bg: "#f3f4f6", fg: "#6b7280" },
+  neutral: { bg: "#f3f4f6", fg: "#4b5563" },
 };
 
 /**
@@ -180,7 +180,7 @@ export function TypeTag({ type }: { type: "short" | "long" }) {
         fontSize: 10,
         fontWeight: 700,
         letterSpacing: "0.08em",
-        color: "#9ca3af",
+        color: "#6b7280",
         whiteSpace: "nowrap",
       }}
     >
@@ -194,7 +194,7 @@ export function TypeTag({ type }: { type: "short" | "long" }) {
 export function ReadOnly({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "#6b7280" }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: "#4b5563" }}>{label}</div>
       <div className="mt-1" style={{ fontSize: 14, fontWeight: 500, color: "#111827" }}>
         {value ?? "—"}
       </div>
@@ -224,7 +224,7 @@ export function Field({
       {error ? (
         <p className="mt-1.5 text-[12px] text-[#DC2626]">{error}</p>
       ) : hint ? (
-        <p className="mt-1.5 text-[12px] text-[#6B7280]">{hint}</p>
+        <p className="mt-1.5 text-[12px] text-[#4B5563]">{hint}</p>
       ) : null}
     </div>
   );
@@ -293,7 +293,7 @@ export function EmptyBlock({
         {title}
       </p>
       {body ? (
-        <p className="mt-1" style={{ fontSize: 13, color: "#6b7280", maxWidth: 320, lineHeight: 1.5 }}>
+        <p className="mt-1" style={{ fontSize: 13, color: "#4b5563", maxWidth: 320, lineHeight: 1.5 }}>
           {body}
         </p>
       ) : null}
@@ -423,7 +423,7 @@ export function Modal({
           <div>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>{title}</h2>
             {description ? (
-              <p className="mt-1" style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.5 }}>
+              <p className="mt-1" style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.5 }}>
                 {description}
               </p>
             ) : null}
@@ -432,7 +432,7 @@ export function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="tap-44 rounded-lg p-1 text-[#6b7280] transition-colors hover:bg-[#f3f4f6]"
+            className="tap-44 rounded-lg p-1 text-[#4b5563] transition-colors hover:bg-[#f3f4f6]"
           >
             <X size={18} />
           </button>

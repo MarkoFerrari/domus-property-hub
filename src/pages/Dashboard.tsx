@@ -81,7 +81,7 @@ function DashboardContent({ hasData, actionCount }: { hasData: boolean; actionCo
             : `${g}. You're all caught up.`
           : `${g}. Let's set up your portfolio.`}
       </h1>
-      <p className="mt-2 max-w-[640px]" style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.55 }}>
+      <p className="mt-2 max-w-[640px]" style={{ fontSize: 14, color: "#4b5563", lineHeight: 1.55 }}>
         {hasData
           ? "Short-term compliance and long-term rent collection, one screen."
           : "Add your first property to start tracking declarations, certificates and rent in one place."}
@@ -189,7 +189,7 @@ function EarningsCard() {
                 padding: "0 12px",
                 borderRadius: 999,
                 backgroundColor: range === r ? "#171717" : "transparent",
-                color: range === r ? "#fff" : "#6b7280",
+                color: range === r ? "#fff" : "#4b5563",
                 border: "none",
                 cursor: "pointer",
               }}
@@ -204,7 +204,7 @@ function EarningsCard() {
         <>
           <div className="mt-4">
             <div style={{ fontWeight: 700, fontSize: 34, color: "#111827" }}>{formatEuro(total)}</div>
-            <div className="mt-1" style={{ fontSize: 13, color: "#6b7280" }}>
+            <div className="mt-1" style={{ fontSize: 13, color: "#4b5563" }}>
               {rangeLabel} · recorded income
             </div>
           </div>
@@ -223,10 +223,10 @@ function EarningsCard() {
             <div className="mt-5 border-t pt-4" style={{ borderColor: "#f3f4f6" }}>
               <div
                 className="flex items-center justify-between"
-                style={{ fontSize: 11, letterSpacing: "0.08em", fontWeight: 700, color: "#9ca3af" }}
+                style={{ fontSize: 11, letterSpacing: "0.08em", fontWeight: 700, color: "#6b7280" }}
               >
                 TOP EARNING PROPERTIES
-                <Link to="/properties" style={{ color: "#6b7280", fontWeight: 600, fontSize: 12 }}>
+                <Link to="/properties" style={{ color: "#4b5563", fontWeight: 600, fontSize: 12 }}>
                   See all →
                 </Link>
               </div>
@@ -245,7 +245,7 @@ function EarningsCard() {
         </>
       ) : (
         <EmptyBlock
-          icon={<Euro size={26} color="#9ca3af" aria-hidden="true" />}
+          icon={<Euro size={26} color="#6b7280" aria-hidden="true" />}
           title="No earnings yet"
           body={
             "Record a declaration or confirm rent on any property to see your breakdown here. Only completed months count."
@@ -304,7 +304,7 @@ function LegendRow({
         style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: color, display: "inline-block" }}
       />
       <span style={{ flex: 1, color: "#111827", fontWeight: 500 }}>{label}</span>
-      <span style={{ color: "#9ca3af", fontSize: 13 }}>{pct}</span>
+      <span style={{ color: "#6b7280", fontSize: 13 }}>{pct}</span>
       <span style={{ color: "#111827", fontWeight: 600, minWidth: 60, textAlign: "right" }}>{amount}</span>
     </div>
   );
@@ -343,7 +343,7 @@ function ActionQueueCard() {
       <div className="flex items-center justify-between">
         <h2 style={{ fontWeight: 700, fontSize: 16, color: "#111827" }}>Action queue</h2>
         {hasMore ? (
-          <Link to="/notifications" style={{ color: "#6b7280", fontWeight: 600, fontSize: 12 }}>
+          <Link to="/notifications" style={{ color: "#4b5563", fontWeight: 600, fontSize: 12 }}>
             See all →
           </Link>
         ) : (
@@ -353,7 +353,7 @@ function ActionQueueCard() {
               padding: "2px 10px",
               borderRadius: 999,
               backgroundColor: "#f3f4f6",
-              color: "#6b7280",
+              color: "#4b5563",
               fontWeight: 600,
             }}
           >

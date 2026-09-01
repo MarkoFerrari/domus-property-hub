@@ -23,7 +23,7 @@ export default function Privacy() {
         <h1 className="mt-10 text-[30px] font-extrabold leading-tight text-[#0D0D0D]">
           Privacy at Domus
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[#6B7280]">
+        <p className="mt-3 text-[15px] leading-relaxed text-[#4B5563]">
           Last updated 10 August 2026. This describes what Domus stores, why, and what you can do
           about it.
         </p>

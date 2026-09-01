@@ -214,7 +214,7 @@ export function PropertyForm({
               />
             </Field>
           </div>
-          <p className="mt-4 rounded-lg bg-[#F9F9F9] px-4 py-3 text-[13px] leading-relaxed text-[#6b7280]">
+          <p className="mt-4 rounded-lg bg-[#F9F9F9] px-4 py-3 text-[13px] leading-relaxed text-[#4b5563]">
             Short-term properties carry two obligations for every completed month, the stay
             declaration and ΤΑΚΚ, each with its own deadline. Months that earned nothing still count.
             Domus tracks both and reminds you. Confirm the rules that apply to you with your
@@ -251,7 +251,7 @@ export function PropertyForm({
               />
             </Field>
           </div>
-          <p className="mt-4 rounded-lg bg-[#F9F9F9] px-4 py-3 text-[13px] leading-relaxed text-[#6b7280]">
+          <p className="mt-4 rounded-lg bg-[#F9F9F9] px-4 py-3 text-[13px] leading-relaxed text-[#4b5563]">
             Domus reminds you to confirm each month&apos;s rent once the due day has passed. It
             never touches your bank account.
           </p>
@@ -259,7 +259,7 @@ export function PropertyForm({
       )}
 
       <SectionCard title="Certificates">
-        <p className="-mt-2 mb-4 text-[13px] leading-relaxed text-[#6b7280]">
+        <p className="-mt-2 mb-4 text-[13px] leading-relaxed text-[#4b5563]">
           Domus tracks six certificates per property. Anything expired or not uploaded puts the
           property into &ldquo;Action needed&rdquo; until you resolve it. Check which ones apply to
           you with your accountant.
@@ -279,7 +279,7 @@ export function PropertyForm({
                     <span className="block truncate text-[14px] font-semibold text-[#111827]">
                       {name}
                     </span>
-                    <span className="block truncate text-[12px] text-[#6b7280]">
+                    <span className="block truncate text-[12px] text-[#4b5563]">
                       {pendingCerts[name]
                         ? `${pendingCerts[name].file.name} · uploads when you save`
                         : certExpiryLabel(rec, status)}
@@ -288,7 +288,7 @@ export function PropertyForm({
                   <StatusPill status={status} size="sm">
                     {CERT_STATUS_LABEL[status]}
                   </StatusPill>
-                  <ChevronRight size={16} color="#9ca3af" aria-hidden="true" />
+                  <ChevronRight size={16} color="#6b7280" aria-hidden="true" />
                 </button>
               </li>
             );

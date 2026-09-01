@@ -70,7 +70,7 @@ export function ActionRow({
           </div>
           <div
             className="mt-0.5 sm:truncate"
-            style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.45 }}
+            style={{ fontSize: 12, color: "#4b5563", lineHeight: 1.45 }}
           >
             {item.subtitle}
           </div>
@@ -111,7 +111,7 @@ export function ActionRow({
               minWidth: 44,
               borderColor: "#e5e7eb",
               backgroundColor: "#fff",
-              color: "#6b7280",
+              color: "#4b5563",
             }}
           >
             <BellOff size={16} aria-hidden="true" />

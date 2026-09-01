@@ -164,7 +164,7 @@ export function CertificateDialog({
                 {picked.name} · {(picked.size / 1024 / 1024).toFixed(1)}MB, ready to upload
               </p>
             ) : hasExisting ? (
-              <div className="flex flex-wrap items-center gap-2 text-[13px] text-[#6b7280]">
+              <div className="flex flex-wrap items-center gap-2 text-[13px] text-[#4b5563]">
                 <FileCheck2 size={15} aria-hidden="true" />
                 <span className="truncate">{record?.file}</span>
                 {record?.path ? (
@@ -202,7 +202,7 @@ export function CertificateDialog({
           />
         </Field>
 
-        <div className="rounded-lg bg-[#F9F9F9] px-4 py-3 text-[13px] text-[#6b7280]">
+        <div className="rounded-lg bg-[#F9F9F9] px-4 py-3 text-[13px] text-[#4b5563]">
           Status after saving:{" "}
           <strong className="font-semibold text-[#111827]">{CERT_STATUS_LABEL[preview]}</strong>
           {preview === "renew" ? ". Domus will keep reminding you until it is renewed." : ""}
